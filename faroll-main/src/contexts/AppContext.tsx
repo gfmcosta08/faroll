@@ -221,31 +221,30 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
 
     // Carregar dados do banco se logado
     if (authUser?.profileId) {
-      loadGoogleSyncSettings(authUser.profileId);
+      // loadGoogleSyncSettings usa auth UID (authUser.id), loadCalendarData usa profileId
+      loadGoogleSyncSettings(authUser.id);
       loadCalendarData(authUser.profileId);
     }
   }, [authUser]);
 
-  // Processar retorno do Google OAuth (Captura de Tokens) - RECONSTRUÇÃO TOTAL
+  // Processar retorno do Google OAuth (Captura de Tokens)
   useEffect(() => {
     const handleOAuthCallback = async () => {
-      // Capturar da URL (Hash) ou da Sessão
       const hash = window.location.hash.substring(1);
       const urlParams = new URLSearchParams(hash);
       const providerToken = urlParams.get('provider_token') || session?.provider_token;
       
       if (providerToken) {
-        // Usa session.user.id como fallback para evitar condição de corrida:
-        // authUser pode ainda não estar populado no momento do retorno OAuth
-        const profileId = authUser?.profileId || state.user?.profileId || session?.user?.id;
-        if (!profileId) {
+        // Usa o auth UID (session.user.id) que é sempre disponível imediatamente
+        // google_sync_settings.user_id agora referencia auth.users(id) diretamente
+        const authUid = session?.user?.id || authUser?.id || state.user?.id;
+        if (!authUid) {
           return;
         }
 
-        
         try {
           const { error: upsertError } = await supabase.from('google_sync_settings').upsert({
-            user_id: profileId,
+            user_id: authUid,
             access_token: providerToken,
             refresh_token: urlParams.get('provider_refresh_token') || (session as any)?.provider_refresh_token || null,
             sync_enabled: true,
@@ -254,30 +253,27 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
 
           if (upsertError) throw upsertError;
 
-          // Forçar estado visual IMEDIATAMENTE
           setState(prev => ({ 
             ...prev, 
             isGoogleSyncEnabled: true,
-            screen: 'gerenciar-agenda' // Forçar ir para tela de agenda
+            screen: 'gerenciar-agenda'
           }));
 
-          // Limpar URL
           if (window.location.hash) {
             window.history.replaceState(null, '', window.location.pathname);
           }
           
-          toast.success("AGORA SIM! Google conectado!");
-          
-          // Sincronizar eventos reais imediatamente
+          toast.success("Google Calendar conectado com sucesso!");
           setTimeout(() => syncWithGoogle(true), 500);
         } catch (err) {
           console.error('[Google Sync] Erro na gravação:', err);
+          toast.error("Erro ao salvar conexão com Google. Tente novamente.");
         }
       }
     };
 
     handleOAuthCallback();
-  }, [session?.provider_token, authUser?.profileId, state.user?.profileId]);
+  }, [session?.provider_token, session?.user?.id]);
 
   // Sincronização Automática do Google Calendar
   useEffect(() => {
@@ -1629,13 +1625,14 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
   const callGoogleCalendarAPI = async (
     url: string,
     options: RequestInit,
-    profileId: string,
+    _profileId: string,
     retry = true
   ): Promise<Response> => {
+    const authUid = session?.user?.id || state.user?.id;
     const { data: settings } = await supabase
       .from('google_sync_settings')
       .select('access_token')
-      .eq('user_id', profileId)
+      .eq('user_id', authUid)
       .single();
 
     const token = settings?.access_token;
@@ -1666,7 +1663,7 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
     descricao?: string,
     externalId?: string
   ): Promise<string | null> => {
-    if (!state.user?.profileId || !state.isGoogleSyncEnabled) return null;
+    if (!state.isGoogleSyncEnabled) return null;
 
     try {
       const body = JSON.stringify({
@@ -1679,7 +1676,6 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
       let url = 'https://www.googleapis.com/calendar/v3/calendars/primary/events';
       let method = 'POST';
 
-      // Se já tem ID no Google, atualiza em vez de criar
       if (externalId) {
         url = `${url}/${externalId}`;
         method = 'PUT';
@@ -1688,7 +1684,7 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
       const res = await callGoogleCalendarAPI(
         url,
         { method, headers: { 'Content-Type': 'application/json' }, body },
-        state.user.profileId
+        ''
       );
 
       if (!res.ok) {
@@ -1707,13 +1703,13 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
 
   /** Remove um evento do Google Calendar pelo ID externo. */
   const deleteEventFromGoogle = async (externalId: string): Promise<void> => {
-    if (!state.user?.profileId || !state.isGoogleSyncEnabled || !externalId) return;
+    if (!state.isGoogleSyncEnabled || !externalId) return;
 
     try {
       await callGoogleCalendarAPI(
         `https://www.googleapis.com/calendar/v3/calendars/primary/events/${externalId}`,
         { method: 'DELETE' },
-        state.user.profileId
+        ''
       );
     } catch (e) {
       console.warn('[Google Sync] Erro ao deletar evento no Google:', e);
@@ -1749,15 +1745,15 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
   };
 
   const toggleGoogleSync = async (enabled: boolean) => {
-    if (!state.user?.profileId) return;
+    const authUid = session?.user?.id || state.user?.id;
+    if (!authUid) return;
 
     try {
       if (enabled) {
-        // Tentar buscar token atual
         const { data: settings } = await supabase
           .from('google_sync_settings')
           .select('access_token')
-          .eq('user_id', state.user.profileId)
+          .eq('user_id', authUid)
           .maybeSingle();
 
         if (!settings?.access_token) {
@@ -1765,19 +1761,16 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
           return;
         }
 
-        // Ativar sincronização
         await supabase.from('google_sync_settings').update({
           sync_enabled: true,
           updated_at: new Date().toISOString()
-        }).eq('user_id', state.user.profileId);
+        }).eq('user_id', authUid);
 
         setState(prev => ({ ...prev, isGoogleSyncEnabled: true }));
         syncWithGoogle(true);
       } else {
-        // LIMPEZA TOTAL: Ao desligar, removemos a linha do banco
-        // Isso garante que qualquer 'token podre' suma para sempre
-        await supabase.from('google_sync_settings').delete().eq('user_id', state.user.profileId);
-        await supabase.from('calendar_events').delete().eq('user_id', state.user.profileId).eq('tipo', 'google_sync');
+        await supabase.from('google_sync_settings').delete().eq('user_id', authUid);
+        await supabase.from('calendar_events').delete().eq('user_id', state.user?.profileId).eq('tipo', 'google_sync');
 
         setState(prev => ({
           ...prev,
@@ -1793,15 +1786,16 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
   };
 
   const syncWithGoogle = async (silent = false) => {
-    if (!state.user?.profileId || !state.isGoogleSyncEnabled) return;
+    const authUid = session?.user?.id || state.user?.id;
+    if (!authUid || !state.isGoogleSyncEnabled) return;
 
     const syncLogic = new Promise(async (resolve, reject) => {
       try {
-        // 1. Buscar tokens do banco
+        // 1. Buscar tokens do banco — usa auth UID como user_id
         const { data: settings, error: settingsError } = await supabase
           .from('google_sync_settings')
           .select('*')
-          .eq('user_id', state.user!.profileId)
+          .eq('user_id', authUid)
           .single();
 
         if (settingsError || !settings?.access_token) {
@@ -1821,10 +1815,8 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
         );
 
         if (response.status === 401) {
-          // Tenta renovar o token antes de desistir
           const newToken = await refreshGoogleToken();
           if (newToken) {
-            // Retry com o novo token
             const retryResponse = await fetch(
               `https://www.googleapis.com/calendar/v3/calendars/primary/events?timeMin=${timeMin}&timeMax=${timeMax}&singleEvents=true&orderBy=startTime`,
               { headers: { 'Authorization': `Bearer ${newToken}` } }
@@ -1834,11 +1826,9 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
               return;
             }
             const retryData = await retryResponse.json();
-            // Continua com os dados do retry
             Object.assign(gData, retryData);
           } else {
-            // Sem refresh disponível — pede reconexão
-            await supabase.from('google_sync_settings').delete().eq('user_id', state.user!.profileId);
+            await supabase.from('google_sync_settings').delete().eq('user_id', authUid);
             await supabase.from('calendar_events').delete().eq('user_id', state.user!.profileId).eq('tipo', 'google_sync');
             setState(prev => ({
               ...prev,
@@ -1858,7 +1848,7 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
         const gData = response.ok ? await response.json() : {};
         const items = gData.items || [];
 
-        // 3. Limpar e Persistir no Supabase
+        // 3. Limpar e Persistir no Supabase — calendar_events usa profileId
         await supabase.from('calendar_events').delete().eq('user_id', state.user!.profileId).eq('tipo', 'google_sync');
 
         const eventsToInsert = items.map((item: any) => {
