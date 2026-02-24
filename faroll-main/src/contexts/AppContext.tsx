@@ -235,7 +235,9 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
       const providerToken = urlParams.get('provider_token') || session?.provider_token;
       
       if (providerToken) {
-        const profileId = authUser?.profileId || state.user?.profileId;
+        // Usa session.user.id como fallback para evitar condição de corrida:
+        // authUser pode ainda não estar populado no momento do retorno OAuth
+        const profileId = authUser?.profileId || state.user?.profileId || session?.user?.id;
         if (!profileId) {
           return;
         }

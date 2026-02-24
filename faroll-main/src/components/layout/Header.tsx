@@ -1,14 +1,21 @@
 import { motion } from 'framer-motion';
-import logoFarollbr from '@/assets/logo-farollbr.jpeg';
+import { useApp } from '@/contexts/AppContext';
 
 export function Header() {
+  const { navigate } = useApp();
+
   return (
     <motion.header
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       className="gradient-farol px-4 py-5 h-[70px] text-primary-foreground shadow-lg flex items-center justify-center"
     >
-      <div className="flex items-center justify-center gap-3">
+      <div
+        className="flex items-center justify-center gap-3 cursor-pointer"
+        onClick={() => navigate('galeria')}
+        role="button"
+        aria-label="Voltar para a galeria"
+      >
         <img src="/logo-farollbr.jpeg" alt="Farollbr" className="h-10 w-10 rounded-full object-cover" />
         <h1 className="font-display text-2xl font-bold tracking-tight">
           Farollbr

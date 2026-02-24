@@ -128,18 +128,11 @@ export const useAuth = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       console.log("[auth] Evento de autenticação:", event);
 
-      // Eventos silenciosos (troca de aba, refresh de token): atualiza sessão sem resetar o usuário
+      // Eventos silenciosos (troca de aba, refresh de token): só atualiza a sessão,
+      // sem re-buscar dados do usuário para evitar re-render/loading visível
       const silentEvents = ["TOKEN_REFRESHED", "USER_UPDATED"];
       if (silentEvents.includes(event)) {
-        if (session?.user) {
-          const userData = await fetchUserData(session.user);
-          if (userData) {
-            setState(prev => ({ ...prev, session, user: userData }));
-          } else {
-            // Mantém o usuário atual se o fetch falhar, só atualiza a sessão
-            setState(prev => ({ ...prev, session }));
-          }
-        }
+        setState(prev => ({ ...prev, session }));
         return;
       }
 
