@@ -1,0 +1,9 @@
+# Refinamentos Visuais - Farollbr Landing Page
+
+## Tarefas
+
+- [/] Alterar botão "Cadastre-se" no header para estilo ghost
+- [ ] Reduzir altura da seção Hero (py-20 → py-12)
+- [ ] Remover botões CTA da seção Hero
+- [ ] Testar alterações localmente
+- [ ] Verificar responsividade

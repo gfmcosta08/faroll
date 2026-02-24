@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
+
+/* Farollbr Design System - Modern Professional Theme */
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 184 7% 19%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 184 7% 19%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 184 7% 19%;
+
+    --primary: 245 74% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 210 17% 98%;
+    --secondary-foreground: 184 7% 19%;
+
+    --muted: 210 17% 96%;
+    --muted-foreground: 191 7% 42%;
+
+    --accent: 174 58% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --warning: 45 100% 70%;
+    --warning-foreground: 184 7% 19%;
+
+    --coral: 340 100% 71%;
+    --coral-foreground: 0 0% 100%;
+
+    --border: 210 14% 89%;
+    --input: 210 14% 89%;
+    --ring: 245 74% 60%;
+
+    --radius: 0.5rem;
+
+    /* Farollbr Gradients */
+    --farol-gradient: linear-gradient(135deg, hsl(245 74% 60%) 0%, hsl(174 58% 56%) 100%);
+    --farol-gradient-soft: linear-gradient(135deg, hsl(245 74% 95%) 0%, hsl(174 58% 95%) 100%);
+    
+    /* Shadows */
+    --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+    --shadow-hover: 0 8px 24px rgba(91, 79, 229, 0.15);
+    --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.08);
+    
+    /* Calendar dot colors */
+    --calendar-personal: 174 58% 56%;
+    --calendar-appointment: 245 74% 60%;
+    --calendar-blocked: 0 0% 60%;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 184 7% 19%;
+    --sidebar-primary: 245 74% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 210 17% 96%;
+    --sidebar-accent-foreground: 184 7% 19%;
+    --sidebar-border: 210 14% 89%;
+    --sidebar-ring: 245 74% 60%;
+  }
+
+  .dark {
+    --background: 222 47% 6%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 245 74% 60%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 33% 17%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 174 58% 56%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 63% 31%;
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 45 100% 70%;
+    --warning-foreground: 184 7% 19%;
+
+    --coral: 340 100% 71%;
+    --coral-foreground: 0 0% 100%;
+
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 245 74% 60%;
+
+    --sidebar-background: 222 47% 6%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 245 74% 60%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 17%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 217 33% 17%;
+    --sidebar-ring: 245 74% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .gradient-farol {
+    background: var(--farol-gradient);
+  }
+
+  .gradient-farol-soft {
+    background: var(--farol-gradient-soft);
+  }
+
+  /* Legacy gradient support for compatibility */
+  .gradient-health {
+    background: var(--farol-gradient);
+  }
+
+  .gradient-health-soft {
+    background: var(--farol-gradient-soft);
+  }
+
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  .shadow-hover {
+    box-shadow: var(--shadow-hover);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 ease-out;
+  }
+
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-hover);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { 
+      opacity: 0; 
+      transform: translateY(10px); 
+    }
+    to { 
+      opacity: 1; 
+      transform: translateY(0); 
+    }
+  }
+}

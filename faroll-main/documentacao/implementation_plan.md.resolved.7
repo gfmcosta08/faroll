@@ -1,0 +1,63 @@
+# Plano de Deploy - FarollBr
+
+Este plano descreve os passos para colocar o site online no domínio `www.farollbr.com.br` usando a Vercel.
+
+## User Review Required
+> [!IMPORTANT]
+> Você precisará das suas chaves do Supabase em mãos para configurar as variáveis de ambiente na Vercel.
+
+## Proposed Changes
+
+### [Backend/Config]
+#### [MODIFY] [.gitignore](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/.gitignore)
+- Adicionado [.env](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/.env) para evitar vazamento de chaves de segurança.
+
+#### [NEW] [vercel.json](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/vercel.json)
+- Configuração de rewrites para garantir que o React Router funcione corretamente na Vercel.
+
+#### [NEW] [.env.example](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/.env.example)
+- Guia de quais variáveis precisam ser preenchidas na Vercel.
+
+### [UI / Agenda & Config]
+#### [MODIFY] [ConfigScreen.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/screens/ConfigScreen.tsx)
+- Adicionada seção de **Integrações** para ativar/desativar o Google Calendar.
+- Implementado toggle que chama [toggleGoogleSync](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#1413-1439) do AppContext.
+
+#### [MODIFY] [ManageScheduleScreen.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/screens/ManageScheduleScreen.tsx)
+- Adicionado indicador visual de status da sincronização.
+- Botão "Sincronizar Agora" para forçar atualização manual.
+
+### [UI / Navegador]
+#### [MODIFY] [index.html](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/index.html)
+- Alterado `<title>` para "FarollBr".
+- Definido [logo-farollbr.jpeg](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/public/logo-farollbr.jpeg) como favicon.
+- Atualizados meta tags de descrição e OpenGraph.
+
+## Passo a Passo para o Usuário
+
+### 1. Preparação do Código
+1. Suba as alterações que fiz (especialmente o [.gitignore](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/.gitignore) e [vercel.json](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/vercel.json)) para o seu GitHub.
+
+### 2. Configuração na Vercel
+1. Acesse [vercel.com](https://vercel.com) e conecte seu GitHub.
+2. Importe o repositório `farollbr`.
+3. Em **Environment Variables**, adicione:
+   - `VITE_SUPABASE_URL`: (Sua URL do Supabase)
+   - `VITE_SUPABASE_ANON_KEY`: (Sua Anon Key do Supabase)
+4. Clique em **Deploy**.
+
+### 3. Configuração do Domínio (Registro.br)
+1. Na Vercel, vá em **Settings > Domains**.
+2. Adicione `www.farollbr.com.br`.
+3. A Vercel mostrará os registros **A** e **CNAME**.
+4. Vá ao painel do [Registro.br](https://registro.br), selecione seu domínio e em **DNS**, adicione os registros informados pela Vercel.
+
+### 4. Ajuste no Supabase
+1. No painel do Supabase, vá em **Authentication > URL Configuration**.
+2. No campo **Site URL**, altere para `https://www.farollbr.com.br`.
+3. Em **Redirect URLs**, adicione `https://www.farollbr.com.br/**`.
+
+## Verification Plan
+1. Acessar `www.farollbr.com.br` e verificar se a Landing Page carrega corretamente.
+2. Tentar fazer login para validar a conexão com o Supabase.
+3. Abrir uma página secundária e dar F5 para testar o roteamento (vercel.json).

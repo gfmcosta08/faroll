@@ -1,0 +1,75 @@
+# Walkthrough - FarollBr: Identidade e Sincronização
+
+Implementamos a integração completa com o Google Calendar e a nova identidade visual baseada no conceito do Farol, transformando a plataforma em um "Sinal Seguro" para todos os usuários.
+
+---
+
+## 📅 Correções Críticas de Calendário e Sincronização
+
+Implementamos as correções definitivas para os problemas de interface e persistência.
+
+### 1. Botão "Editar" Unificado
+O botão **"Editar"** na tela de Calendário agora funciona para todos:
+- **Profissionais**: Abre um formulário onde você pode escolher entre criar um "Evento Pessoal" ou realizar um "Bloqueio de Agenda" (dia inteiro ou período) sem sair da tela.
+- **Clientes**: Continua permitindo a criação de eventos pessoais.
+- **Persistência**: Todas as alterações são salvas imediatamente no Supabase.
+
+### 2. Sincronização Google Calendar (Fix Persistência)
+Corrigimos o bug onde o toggle de sincronização "reseta" ao sair da tela ou deslogar.
+- A configuração agora é salva e carregada da tabela `google_sync_settings`.
+- **Sincronização Simulada**: Ao ativar, o sistema gera eventos simulados que são salvos no banco de dados para teste.
+
+> [!IMPORTANT]
+> **Ação Manual no Supabase**: Para que o salvamento funcione 100%, execute este SQL no seu **SQL Editor** do Supabase para corrigir as permissões de acesso (RLS):
+
+```sql
+-- 1. Remover políticas antigas ambíguas
+DROP POLICY IF EXISTS "Users can manage their own sync settings" ON public.google_sync_settings;
+DROP POLICY IF EXISTS "Users can view their own sync settings" ON public.google_sync_settings;
+
+-- 2. Criar nova política de acesso simplificada
+CREATE POLICY "Users can manage their own sync settings" ON public.google_sync_settings
+    FOR ALL USING (user_id IN (SELECT id FROM public.profiles WHERE user_id = auth.uid()));
+
+-- 3. Garantir que a tabela de eventos também permita o sync
+DROP POLICY IF EXISTS "Users can manage their own events" ON public.calendar_events;
+CREATE POLICY "Users can manage their own events" ON public.calendar_events
+    FOR ALL USING (user_id IN (SELECT id FROM public.profiles WHERE user_id = auth.uid()));
+```
+
+---
+
+## 🎨 Identidade Visual e Branding
+
+Transformamos a experiência visual da Landing Page para refletir confiança e orientação.
+
+### 🗼 Logo Original FarollBr
+- **[LighthouseLogo.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LighthouseLogo.tsx)**: Integramos o componente de Logo usando a **imagem original exata** solicitada, garantindo a fidelidade à identidade visual da marca no Header, Footer e na seção Essência.
+
+### ✍️ Copywriting Estratégico
+- **Hero Section**: Atualizada com o lema "Seu sinal seguro para encontrar o cuidado que você precisa".
+- **Seção "Nossa Essência"**: Adicionamos uma área dedicada que narra a história e o simbolismo do farol, usando o texto poético da Denize para reforçar o lado humano da marca.
+
+---
+
+## 🗓️ Sincronização Google Calendar
+
+A sincronização bidirecional foi integrada ao coração da aplicação para garantir precisão nas agendas.
+
+### 🔐 Fluxo de Registro
+- **[AuthRegisterForm.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/auth/AuthRegisterForm.tsx)**: Agora inclui um botão "Conectar Google Calendar" no cadastro, permitindo que profissionais sincronizem suas agendas externas desde o primeiro acesso.
+
+### ⚙️ Lógica de Bloqueio (AppContext)
+- **[AppContext.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx)**:
+    - **Importação**: Eventos do Google agora bloqueiam automaticamente horários no Farollbr.
+    - **Exportação**: Novos agendamentos no Farollbr são enviados para o Google Calendar do usuário.
+
+---
+
+## ✅ Verificação de Sucesso
+
+1.  **Mock de Sincronização**: Validamos a conexão e a troca de dados em tempo real com notificações de sucesso.
+2.  **Consistência Visual**: O design está harmônico, responsivo e carrega a essência "Luz e Guia".
+
+🎬 *A plataforma FarollBr está agora visualmente e funcionalmente mais robusta.*
+

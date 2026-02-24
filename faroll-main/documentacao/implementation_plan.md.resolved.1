@@ -1,0 +1,338 @@
+# Adicionar Filtros de Busca na Landing Page
+
+Implementar os mesmos filtros presentes na página Galeria na seção de busca da landing page do Farollbr, seguindo as mesmas regras e comportamentos.
+
+## Análise dos Filtros da Galeria
+
+Identificados os seguintes filtros em [GalleryScreen.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/screens/GalleryScreen.tsx):
+
+### Filtros Disponíveis
+
+1. **Busca por Texto** (linha 252)
+   - Campo de input com ícone de busca
+   - Busca em: nome, profissão, especialidades
+   - Placeholder: "Buscar por nome, profissão ou especialidade..."
+
+2. **Profissão** (linhas 262-274)
+   - Select dropdown
+   - Carregado da tabela `professions`
+   - Quando alterado, reseta o filtro de especialização
+
+3. **Especialização** (linhas 277-289)
+   - Select dropdown
+   - Filtrado pela profissão selecionada
+   - Carregado da tabela `specializations`
+
+4. **País** (linhas 292-304)
+   - Select dropdown
+   - Lista de países do arquivo `@/data/locations`
+   - Quando alterado, reseta estado e cidade
+
+5. **Estado** (linhas 307-323)
+   - Select dropdown
+   - Habilitado apenas quando país selecionado
+   - Filtrado pelo país selecionado
+   - Quando alterado, reseta cidade
+
+6. **Cidade** (linhas 326-342)
+   - Select dropdown
+   - Habilitado apenas quando estado selecionado
+   - Filtrado pelo estado selecionado
+
+7. **Tipo de Atendimento** (linhas 345-355)
+   - Select dropdown
+   - Opções: Presencial, Online, Híbrido
+
+### Regras de Filtragem
+
+- Filtros dependentes são resetados quando o pai muda
+- Estados desabilitados quando país não selecionado
+- Cidades desabilitadas quando estado não selecionado
+- Especializações filtradas pela profissão selecionada
+- Contador de filtros ativos exibido
+- Contador de resultados encontrados
+
+## Proposta de Mudanças
+
+### Arquivo: [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx)
+
+#### 1. Adicionar Imports
+
+Adicionar imports necessários para os componentes de filtro:
+
+```typescript
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { countries, getStatesByCountry, getCitiesByState } from "@/data/locations";
+import { Filter } from "lucide-react";
+```
+
+#### 2. Adicionar Estados para Filtros
+
+Adicionar states para gerenciar os filtros (após linha 40):
+
+```typescript
+// Filter states
+const [selectedProfession, setSelectedProfession] = useState<string>("all");
+const [selectedSpecialization, setSelectedSpecialization] = useState<string>("all");
+const [selectedCountry, setSelectedCountry] = useState<string>("all");
+const [selectedState, setSelectedState] = useState<string>("all");
+const [selectedCity, setSelectedCity] = useState<string>("all");
+const [selectedAttendanceType, setSelectedAttendanceType] = useState<string>("all");
+const [searchText, setSearchText] = useState("");
+```
+
+#### 3. Adicionar Estados para Dados
+
+```typescript
+const [professions, setProfessions] = useState<Profession[]>([]);
+const [specializations, setSpecializations] = useState<Specialization[]>([]);
+```
+
+#### 4. Adicionar Funções de Fetch
+
+Adicionar funções para carregar profissões e especializações do banco:
+
+```typescript
+const fetchProfessions = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("professions")
+      .select("id, nome")
+      .eq("ativa", true)
+      .order("nome");
+    
+    if (error) throw error;
+    setProfessions(data || []);
+  } catch (error) {
+    console.error("Erro ao buscar profissões:", error);
+  }
+};
+
+const fetchSpecializations = async () => {
+  try {
+    const { data, error } = await supabase
+      .from("specializations")
+      .select("id, nome, profession_id")
+      .eq("ativa", true)
+      .order("nome");
+    
+    if (error) throw error;
+    setSpecializations(data || []);
+  } catch (error) {
+    console.error("Erro ao buscar especializações:", error);
+  }
+};
+```
+
+#### 5. Adicionar Handlers de Mudança
+
+```typescript
+const handleCountryChange = (value: string) => {
+  setSelectedCountry(value);
+  setSelectedState("all");
+  setSelectedCity("all");
+};
+
+const handleStateChange = (value: string) => {
+  setSelectedState(value);
+  setSelectedCity("all");
+};
+
+const handleProfessionChange = (value: string) => {
+  setSelectedProfession(value);
+  setSelectedSpecialization("all");
+};
+```
+
+#### 6. Adicionar Lógica de Filtragem
+
+```typescript
+const filteredSpecializations = selectedProfession === "all"
+  ? specializations
+  : specializations.filter(s => s.profession_id === selectedProfession);
+
+const availableStates = selectedCountry === "all" ? [] : getStatesByCountry(selectedCountry);
+const availableCities = selectedState === "all" ? [] : getCitiesByState(selectedState);
+```
+
+#### 7. Substituir Seção de Busca (linhas 321-351)
+
+Substituir a seção atual de busca simples por uma versão completa com todos os filtros:
+
+```tsx
+<section className="py-12 px-4 bg-secondary">
+  <div className="container mx-auto max-w-6xl">
+    <h3 className="text-2xl font-bold font-display mb-6 text-center">
+      Encontre o profissional ideal
+    </h3>
+    
+    <div className="bg-card rounded-xl shadow-card p-6 space-y-4">
+      {/* Search Input */}
+      <div className="relative">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
+          placeholder="Buscar por nome, profissão ou especialidade..."
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
+          className="pl-10"
+        />
+      </div>
+
+      {/* Filters Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {/* Profession Filter */}
+        <Select value={selectedProfession} onValueChange={handleProfessionChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todas as profissões" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[300px]">
+            <SelectItem value="all">Todas as profissões</SelectItem>
+            {professions.map((prof) => (
+              <SelectItem key={prof.id} value={prof.id}>
+                {prof.nome}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Specialization Filter */}
+        <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todas as especializações" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[300px]">
+            <SelectItem value="all">Todas as especializações</SelectItem>
+            {filteredSpecializations.map((spec) => (
+              <SelectItem key={spec.id} value={spec.id}>
+                {spec.nome}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Country Filter */}
+        <Select value={selectedCountry} onValueChange={handleCountryChange}>
+          <SelectTrigger>
+            <SelectValue placeholder="Todos os países" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os países</SelectItem>
+            {countries.map((country) => (
+              <SelectItem key={country.code} value={country.code}>
+                {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* State Filter */}
+        <Select 
+          value={selectedState} 
+          onValueChange={handleStateChange}
+          disabled={selectedCountry === "all"}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Todos os estados" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os estados</SelectItem>
+            {availableStates.map((state) => (
+              <SelectItem key={state.code} value={state.code}>
+                {state.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* City Filter */}
+        <Select 
+          value={selectedCity} 
+          onValueChange={setSelectedCity}
+          disabled={selectedState === "all"}
+        >
+          <SelectTrigger>
+            <SelectValue placeholder="Todas as cidades" />
+          </SelectTrigger>
+          <SelectContent className="max-h-[300px]">
+            <SelectItem value="all">Todas as cidades</SelectItem>
+            {availableCities.map((city) => (
+              <SelectItem key={city.name} value={city.name}>
+                {city.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        {/* Attendance Type Filter */}
+        <Select value={selectedAttendanceType} onValueChange={setSelectedAttendanceType}>
+          <SelectTrigger>
+            <SelectValue placeholder="Tipo de atendimento" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">Todos os tipos</SelectItem>
+            <SelectItem value="presencial">Presencial</SelectItem>
+            <SelectItem value="online">Online</SelectItem>
+            <SelectItem value="hibrido">Híbrido</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      {/* Search Button */}
+      <Button
+        size="lg"
+        onClick={onRegister}
+        className="w-full"
+      >
+        <Search className="w-5 h-5 mr-2" />
+        Buscar Profissionais
+      </Button>
+    </div>
+  </div>
+</section>
+```
+
+## Tipos TypeScript Necessários
+
+Adicionar interfaces (após linha 34):
+
+```typescript
+interface Profession {
+  id: string;
+  nome: string;
+}
+
+interface Specialization {
+  id: string;
+  nome: string;
+  profession_id: string | null;
+}
+```
+
+## Chamada de Fetch no useEffect
+
+Adicionar no useEffect existente (linha 42):
+
+```typescript
+useEffect(() => {
+  loadData();
+  fetchProfessions();
+  fetchSpecializations();
+}, []);
+```
+
+## Verificação
+
+### Testes Manuais
+1. Verificar que todos os filtros aparecem corretamente
+2. Testar dependências entre filtros (país → estado → cidade)
+3. Testar reset de filtros dependentes
+4. Verificar que profissão filtra especializações
+5. Testar responsividade em mobile
+6. Verificar que o botão "Buscar" redireciona para cadastro
+
+### Comportamento Esperado
+- ✅ Filtros desabilitados quando dependência não selecionada
+- ✅ Filtros resetados quando pai muda
+- ✅ Layout responsivo (1 coluna mobile, 2 tablet, 3 desktop)
+- ✅ Mesma aparência visual da GalleryScreen
+- ✅ Botão de busca chama `onRegister` (usuário precisa se cadastrar para buscar)

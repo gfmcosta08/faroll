@@ -1,0 +1,76 @@
+# Refinamentos Visuais na Landing Page do Farollbr
+
+Aplicar refinamentos visuais no componente [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx) com base no feedback da conversa anterior, incluindo ajustes no header e na seção hero.
+
+## User Review Required
+
+> [!IMPORTANT]
+> **Preciso confirmar quais refinamentos você deseja aplicar**
+> 
+> Com base na conversa anterior sobre "Visual Redesign Refinements", identifiquei os seguintes possíveis ajustes:
+> 
+> 1. **Remover links de navegação do header** (ex: "Início", "Agenda")
+> 2. **Alterar botão "Cadastre-se" para estilo ghost** (transparente com borda)
+> 3. **Reduzir altura da seção Hero** (diminuir padding)
+> 4. **Remover botão CTA da seção Hero** (ex: "Começar Agora")
+> 
+> **Pergunta:** Quais desses refinamentos você gostaria de aplicar no Farollbr? Ou você tem outros ajustes em mente?
+
+## Análise Atual
+
+Analisando o componente [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx), identifiquei:
+
+### Header (linhas 148-167)
+- Atualmente possui logo + nome "Farollbr" à esquerda
+- Dois botões à direita: "Entrar" (ghost) e "Cadastre-se" (primary)
+- **Não há links de navegação** como "Início" ou "Agenda"
+
+### Hero Section (linhas 170-197)
+- Padding atual: `py-20` (5rem top/bottom)
+- Contém título, descrição e **dois botões CTA**:
+  - "Começar Agora" (primary)
+  - "Já tenho conta" (outline)
+
+## Proposta de Mudanças
+
+Aguardando confirmação do usuário sobre quais refinamentos aplicar.
+
+### Possíveis Alterações
+
+#### Opção 1: Botão "Cadastre-se" em estilo ghost
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx#L162-L164)
+
+Alterar o botão "Cadastre-se" de `variant` padrão para `variant="ghost"`.
+
+---
+
+#### Opção 2: Reduzir altura da Hero Section
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx#L170)
+
+Reduzir padding de `py-20` para `py-12` ou `py-16`.
+
+---
+
+#### Opção 3: Remover botões CTA da Hero
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx#L178-L195)
+
+Remover ou comentar a seção de botões na Hero.
+
+---
+
+#### Opção 4: Outras alterações
+Aguardando especificação do usuário.
+
+## Verification Plan
+
+### Manual Verification
+1. Após aplicar as mudanças, executar o servidor de desenvolvimento:
+   ```bash
+   cd c:\Users\GIANPAOLO\.gemini\antigravity\playground\farollbr
+   npm run dev
+   ```
+2. Abrir o navegador em `http://localhost:5173` (ou porta indicada)
+3. Verificar visualmente:
+   - Header: estilo dos botões
+   - Hero Section: altura e presença/ausência de botões
+   - Responsividade em diferentes tamanhos de tela

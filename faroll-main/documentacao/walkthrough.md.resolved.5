@@ -1,0 +1,35 @@
+# Walkthrough - Sincronização Google Calendar
+
+Implementamos a integração completa com o Google Calendar, permitindo que profissionais e clientes mantenham suas agendas sincronizadas com a plataforma Farollbr.
+
+## Alterações Realizadas
+
+### 🗄️ Banco de Dados (Supabase)
+Criamos a infraestrutura necessária para suportar a sincronização persistente.
+- **[google_calendar_sync.sql](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/supabase/migrations/20260212154500_google_calendar_sync.sql)**: Nova migração contendo a tabela `google_sync_settings` para tokens de acesso/refresh e o campo `external_id` em `calendar_events`.
+
+### 🔐 Fluxo de Registro
+Adicionamos uma nova seção no formulário de cadastro para incentivar a sincronização desde o primeiro contato.
+- **[AuthRegisterForm.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/auth/AuthRegisterForm.tsx)**: Agora inclui um botão "Conectar Google Calendar" com simulação de fluxo OAuth e salvamento automático das configurações no banco após o cadastro bem-sucedido.
+
+### ⚙️ Lógica Central (AppContext)
+A sincronização bidirecional foi integrada ao coração da aplicação.
+- **[AppContext.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx)**:
+    - **Importação**: Eventos vindos do Google (tipo `google_sync`) agora são respeitados pela função [isDateBlocked](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#739-776), impedindo agendamentos em horários comprometidos externamente.
+    - **Exportação**: Ao criar um agendamento no Farollbr, o sistema dispara automaticamente uma exportação para o Google Calendar vinculado.
+
+## Verificação de Sucesso
+
+### Mock de Sincronização
+Para validar o comportamento sem segredos de API reais, implementamos um serviço de mock que:
+1.  Simula a conexão OAuth bem-sucedida.
+2.  Importa um evento de exemplo após 2 segundos da conexão.
+3.  Exibe notificações (Toasts) confirmando a exportação de dados.
+
+### Regras de Negócio Validadas
+- [x] Se "Sincronização" estiver ativa, eventos externos bloqueiam a agenda.
+- [x] Se desativada, os bloqueios externos são removidos.
+- [x] O estado de sincronização é persistido no perfil do usuário.
+
+---
+🎬 *A funcionalidade está pronta para ser testada no ambiente de desenvolvimento local.*

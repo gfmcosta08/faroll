@@ -1,0 +1,28 @@
+# Planejamento - Identidade Visual FarollBr
+
+## branding e Identidade
+- [x] Sugerir frases conceituais baseadas no texto da Denize
+- [x] Criar/Implementar a Logo do Farol no Header e Footer
+- [x] Atualizar a seção Hero com o novo conceito "Sinal Seguro"
+- [x] Criar uma seção "Nossa Essência" com o texto inspirador
+
+## Deploy para Produção
+- [x] Configurar roteamento Vercel ([vercel.json](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/vercel.json))
+- [x] Proteger segredos no [.gitignore](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/.gitignore)
+- [x] Documentar passo a passo de deploy (Vercel + Registro.br)
+- [x] Sincronizar alterações com GitHub/Vercel
+- [x] Validar configuração de URLs no Supabase
+
+## Correções de Produção
+- [x] Corrigir carregamento da logo em produção (pasta `/public`)
+- [x] Orientar execução de SQL no Supabase para Sincronização
+
+## Sincronização Google Calendar (Concluído)
+- [x] Planejar arquitetura de sincronização
+- [x] Implementar fluxo de autorização no Registro
+- [x] Criar tabelas/esquema no Supabase
+- [x] Desenvolver serviço de sincronização bidirecional
+- [x] Atualizar regras de bloqueio no AppContext
+- [x] Validar sincronização em tempo real (Mock)
+- [ ] Adicionar botão de "Sincronizar com Google" na Tela de Configurações
+- [ ] Exibir status de sincronização no Gerenciamento de Agenda

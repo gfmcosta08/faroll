@@ -1,0 +1,149 @@
+# Refinamentos Visuais - Farollbr Landing Page
+
+Refinamentos visuais aplicados com sucesso na landing page do Farollbr, resultando em um design mais limpo e minimalista.
+
+## Alterações Realizadas
+
+### 1. Botão "Cadastre-se" com Estilo Ghost
+
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx#L162)
+
+Alterado o botão "Cadastre-se" no header de estilo sólido (primary) para estilo ghost (transparente com borda).
+
+```diff
+- <Button onClick={onRegister}>
++ <Button variant="ghost" onClick={onRegister}>
+    Cadastre-se
+  </Button>
+```
+
+**Resultado:** Ambos os botões do header ("Entrar" e "Cadastre-se") agora têm o mesmo estilo visual, criando uma aparência mais uniforme e discreta.
+
+---
+
+### 2. Redução da Altura da Hero Section
+
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx#L169)
+
+Reduzido o padding vertical da seção hero de `py-20` (5rem) para `py-12` (3rem).
+
+```diff
+- <section className="py-20 px-4 gradient-farol">
++ <section className="py-12 px-4 gradient-farol">
+```
+
+**Resultado:** A seção hero agora ocupa menos espaço vertical, permitindo que os usuários vejam mais conteúdo sem precisar rolar a página.
+
+---
+
+### 3. Remoção dos Botões CTA da Hero
+
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx#L175-L195)
+
+Removidos os dois botões de call-to-action ("Começar Agora" e "Já tenho conta") da seção hero.
+
+```diff
+  <p className="text-xl text-primary-foreground/90">
+    Encontre psicólogos, médicos, terapeutas e outros profissionais de saúde avaliados por quem já usou.
+  </p>
+- <div className="flex justify-center gap-4">
+-   <Button size="lg" onClick={onRegister} className="bg-primary-foreground text-primary hover:bg-primary-foreground/90">
+-     Começar Agora
+-     <ArrowRight className="ml-2 w-5 h-5" />
+-   </Button>
+-   <Button size="lg" variant="outline" onClick={onLogin} className="border-primary-foreground text-primary-foreground hover:bg-primary-foreground/10">
+-     Já tenho conta
+-   </Button>
+- </div>
+```
+
+**Resultado:** A hero section agora tem um design mais limpo e focado na mensagem principal, sem distrações visuais. Os usuários ainda podem acessar as ações de login/cadastro através dos botões no header.
+
+## Impacto Visual
+
+As alterações resultam em:
+
+- ✨ **Design mais limpo e minimalista** na hero section
+- 🎯 **Foco maior na mensagem principal** sem competição visual dos botões
+- 📏 **Melhor aproveitamento do espaço vertical** da página
+- 🔄 **Consistência visual** nos botões do header
+
+## Como Visualizar
+
+O servidor de desenvolvimento está rodando em:
+
+**URL Local:** http://localhost:8081
+
+Para visualizar as alterações:
+
+1. Abra seu navegador
+2. Acesse http://localhost:8081
+3. Observe:
+   - Header: ambos os botões agora têm estilo ghost
+   - Hero: altura reduzida e sem botões CTA
+   - Design geral mais limpo e focado
+
+## Próximos Passos
+
+- ✅ Alterações aplicadas e testadas localmente
+- 📝 Revisar responsividade em diferentes tamanhos de tela
+- 🚀 Fazer commit e push das alterações para o GitHub
+- 🌐 Deploy para produção (se aprovado)
+
+## Arquivos Modificados
+
+- [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx) - Componente principal da landing page
+
+---
+
+### 4. Implementação de Filtros de Busca Avançada
+
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx)
+
+Adicionada uma seção de busca completa que replica exatamente a funcionalidade e os filtros da página **Galeria**.
+
+**Filtros Adicionados:**
+- 🔍 **Busca por Texto:** Pesquisa por nome, profissão ou especialidade.
+- 💼 **Profissão:** Dropdown com todas as profissões ativas.
+- 🧪 **Especialização:** Dropdown filtrado automaticamente pela profissão selecionada.
+- 🌎 **Localização (País, Estado, Cidade):** Filtros dinâmicos com dependência hierárquica.
+- 📅 **Tipo de Atendimento:** Opções para Presencial, Online ou Híbrido.
+
+**Regras de Negócio Replicadas:**
+- ✅ Filtros de Estado e Cidade são habilitados apenas quando o "pai" é selecionado.
+- ✅ Especializações são filtradas pela profissão.
+- ✅ Botão de busca unificado que direciona para o cadastro.
+
+**Resultado:** A landing page agora oferece uma experiência de busca profissional logo de cara, aumentando o engajamento e a percepção de valor do sistema Farollbr.
+
+## Como Visualizar
+
+O servidor de desenvolvimento está rodando em:
+
+**URL Local:** http://localhost:8081
+
+Para visualizar as alterações:
+
+1. Abra seu navegador **Chrome**
+2. Acesse http://localhost:8081
+3. Role até a seção de busca para testar os novos filtros.
+
+---
+
+### 5. Reestruturação e Novas Seções (Notícias e Vídeos)
+
+**Arquivo:** [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx)
+
+A landing page foi reestruturada para otimizar o fluxo de informação e adicionar conteúdo dinâmico.
+
+**Mudanças na Estrutura:**
+- 🔄 **Inversão de Prioridade:** A seção de "Profissionais Mais Bem Avaliados" agora aparece **antes** do "Como Funciona", dando destaque imediato aos talentos da plataforma.
+- 📰 **Notícias e Artigos (WordPress):** Adicionada uma nova área logo após os filtros de busca com 2 blocos de destaque para textos informativos.
+- 📺 **Vídeos Informativos (YouTube):** Adicionada uma seção dedicada com um player de vídeo centralizado logo abaixo das notícias.
+
+**Destaques Visuais:**
+- ✅ Cards de notícias com sombra e efeitos de hover aprimorados.
+- ✅ Player de vídeo com bordas arredondadas e sombra 2xl seguindo a estética premium do Farollbr.
+- ✅ Layout responsivo garantindo leitura fluida em qualquer dispositivo.
+
+**Resultado:** Uma landing page mais completa, dinâmica e com maior autoridade visual.

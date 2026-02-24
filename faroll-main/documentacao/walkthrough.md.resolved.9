@@ -1,0 +1,60 @@
+# Walkthrough - FarollBr: Identidade e Sincronização
+
+Implementamos a integração completa com o Google Calendar e a nova identidade visual baseada no conceito do Farol, transformando a plataforma em um "Sinal Seguro" para todos os usuários.
+
+---
+
+## 📅 Correções de Calendário e Persistência Supabase
+
+Resolvemos os bugs relatados nas interfaces de calendário e garantimos que todos os dados sejam salvos permanentemente no banco de dados.
+
+### 1. Botões de Edição Restaurados
+- **Profissional**: Agora possui o botão **Editar** (para eventos pessoais) e o botão **Bloquear Agenda** (para gestão de horários) no topo do calendário.
+- **Cliente**: Botão **Editar** restaurado para criação de eventos pessoais.
+- **Interface Unificada**: Ambos os perfis utilizam agora o mesmo componente de formulário para eventos pessoais.
+
+### 2. Persistência Total no Supabase
+- Migramos as funções do [AppContext](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#88-161) ([addScheduleBlock](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#733-766), [addPersonalEvent](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#1322-1356), etc.) para realizar operações reais no banco de dados.
+- Implementamos o carregamento automático de eventos e bloqueios ao iniciar o aplicativo.
+- Isso impede a perda de dados ao recarregar a página (F5) ou realizar logout.
+
+### 3. Melhoria na Sincronização Google
+- Corrigimos a persistência da configuração de sincronização no perfil do usuário.
+- A função de sincronizar agora salva os eventos externos mockados no banco de dados, permitindo que eles apareçam consistentemente no calendário do site como blocos de compromisso.
+
+---
+
+## 🎨 Identidade Visual e Branding
+
+Transformamos a experiência visual da Landing Page para refletir confiança e orientação.
+
+### 🗼 Logo Original FarollBr
+- **[LighthouseLogo.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LighthouseLogo.tsx)**: Integramos o componente de Logo usando a **imagem original exata** solicitada, garantindo a fidelidade à identidade visual da marca no Header, Footer e na seção Essência.
+
+### ✍️ Copywriting Estratégico
+- **Hero Section**: Atualizada com o lema "Seu sinal seguro para encontrar o cuidado que você precisa".
+- **Seção "Nossa Essência"**: Adicionamos uma área dedicada que narra a história e o simbolismo do farol, usando o texto poético da Denize para reforçar o lado humano da marca.
+
+---
+
+## 🗓️ Sincronização Google Calendar
+
+A sincronização bidirecional foi integrada ao coração da aplicação para garantir precisão nas agendas.
+
+### 🔐 Fluxo de Registro
+- **[AuthRegisterForm.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/auth/AuthRegisterForm.tsx)**: Agora inclui um botão "Conectar Google Calendar" no cadastro, permitindo que profissionais sincronizem suas agendas externas desde o primeiro acesso.
+
+### ⚙️ Lógica de Bloqueio (AppContext)
+- **[AppContext.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx)**:
+    - **Importação**: Eventos do Google agora bloqueiam automaticamente horários no Farollbr.
+    - **Exportação**: Novos agendamentos no Farollbr são enviados para o Google Calendar do usuário.
+
+---
+
+## ✅ Verificação de Sucesso
+
+1.  **Mock de Sincronização**: Validamos a conexão e a troca de dados em tempo real com notificações de sucesso.
+2.  **Consistência Visual**: O design está harmônico, responsivo e carrega a essência "Luz e Guia".
+
+🎬 *A plataforma FarollBr está agora visualmente e funcionalmente mais robusta.*
+

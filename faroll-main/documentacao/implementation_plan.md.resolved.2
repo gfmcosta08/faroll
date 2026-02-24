@@ -1,0 +1,40 @@
+# Reestruturação da Landing Page Farollbr
+
+Reordenar as seções da landing page e adicionar novas áreas para conteúdo informativo (WordPress) e vídeos (YouTube).
+
+## Proposed Changes
+
+### Arquivo: [LandingPage.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LandingPage.tsx)
+
+#### 1. Reordenação de Seções
+- Inverter a ordem das seções:
+  - Mover "Top 5 Profissionais" para antes de "Como Funciona".
+  - Manter "Seção de Busca com Filtros" após "Como Funciona".
+
+#### 2. Nova Seção: Notícias e Artigos
+- Adicionar uma seção logo após os Filtros de Busca.
+- Layout: 2 blocos (cards) lado a lado.
+- Conteúdo: Pré-visualização de artigos (título, imagem, resumo).
+- Nota: Atualmente já existe uma seção `contentCards`, vou adaptá-la para exibir apenas 2 e garantir que esteja posicionada corretamente.
+
+#### 3. Nova Seção: Vídeos (YouTube)
+- Adicionar uma seção após a área de Notícias.
+- Layout: Um bloco centralizado ou grid para vídeos.
+- Conteúdo: Iframe para embed do YouTube.
+- Estilo: Seguir o design system do Farollbr (bordas arredondadas, sombras).
+
+## Verification Plan
+
+### Manual Verification
+1. Abrir a página no navegador (Chrome) em `http://localhost:8081`.
+2. Verificar a nova ordem:
+   - Header
+   - Hero
+   - Profissionais
+   - Como Funciona
+   - Filtros
+   - Notícias/Artigos (2 blocos)
+   - Vídeos (YouTube)
+   - Footer
+3. Testar o play do vídeo no YouTube embed.
+4. Verificar se os cards de notícias estão responsivos.

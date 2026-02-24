@@ -1,0 +1,37 @@
+# Sincronização Google Calendar - Farollbr
+
+Implementar a sincronização bidirecional entre o calendário do Farollbr e o Google Calendar, integrada ao fluxo de registro de novos usuários.
+
+## User Review Required
+
+> [!IMPORTANT]
+> A sincronização com Google Calendar requer que o usuário autorize o acesso à sua conta Google durante ou logo após o registro.
+> As regras de sincronização propostas são:
+> 1. **Google -> Farollbr**: Eventos do Google são importados como "Bloqueios de Agenda" (🔴) para profissionais, impedindo agendamentos de clientes.
+> 2. **Farollbr -> Google**: Agendamentos feitos na plataforma (🔵) e eventos pessoais (🟢) são adicionados ao Google Calendar do usuário.
+
+## Proposed Changes
+
+### [Autenticação e Registro]
+#### [MODIFY] [AuthRegisterForm.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/auth/AuthRegisterForm.tsx)
+- Adicionar opção "Sincronizar com Google Calendar" ao final do formulário.
+- Chamar fluxo OAuth da Google antes de finalizar o registro para coletar tokens.
+
+### [Core Logic]
+#### [MODIFY] [AppContext.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx)
+- Atualizar [isDateBlocked](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#714-751) para considerar eventos vindos do Google (bloqueios externos).
+- Adicionar hooks de efeito para disparar sincronização quando novos agendamentos forem criados.
+
+### [Banco de Dados]
+#### [NEW] [Migration: google_calendar_sync](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/supabase/migrations/202602121545_google_sync.sql)
+- Tabela `google_sync_settings`: `user_id`, `access_token`, `refresh_token`, `calendar_id`, `last_sync`.
+- Campo `external_id` na tabela `calendar_events` para evitar duplicidade.
+
+## Verification Plan
+
+### Manual Verification
+1. Realizar o cadastro de um novo Profissional.
+2. Autorizar o Google Calendar.
+3. Criar um evento no Google Calendar pessoal.
+4. Verificar se o horário aparece como "Bloqueado" na agenda do Farollbr.
+5. Agendar uma consulta no Farollbr e verificar se aparece no Google Calendar.

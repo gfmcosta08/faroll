@@ -1,0 +1,18 @@
+# Web framework
+fastapi
+uvicorn[standard]
+
+# Auth
+python-jose[cryptography]
+passlib[bcrypt]
+
+# HTTP (Supabase REST direto)
+httpx
+requests
+
+# AI
+openai
+
+# Utils
+python-dotenv
+pydantic-settings

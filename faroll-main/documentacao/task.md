@@ -1,0 +1,42 @@
+# Planejamento - Identidade Visual FarollBr
+
+## branding e Identidade
+- [x] Sugerir frases conceituais baseadas no texto da Denize
+- [x] Criar/Implementar a Logo do Farol no Header e Footer
+- [x] Atualizar a seção Hero com o novo conceito "Sinal Seguro"
+- [x] Criar uma seção "Nossa Essência" com o texto inspirador
+
+## Deploy para Produção
+- [x] Configurar roteamento Vercel (`vercel.json`)
+- [x] Proteger segredos no `.gitignore`
+- [x] Documentar passo a passo de deploy (Vercel + Registro.br)
+- [x] Sincronizar alterações com GitHub/Vercel
+- [x] Validar configuração de URLs no Supabase
+
+## Correções de Produção
+- [x] Corrigir carregamento da logo em produção (pasta `/public`)
+- [x] Orientar execução de SQL no Supabase para Sincronização
+
+## Sincronização Google Calendar (Concluído)
+- [x] Planejar arquitetura de sincronização
+- [x] Implementar fluxo de autorização no Registro
+- [x] Criar tabelas/esquema no Supabase
+- [x] Desenvolver serviço de sincronização bidirecional
+- [x] Atualizar regras de bloqueio no AppContext
+- [x] Validar sincronização em tempo real (Mock)
+- [x] Adicionar botão de "Sincronizar com Google" na Tela de Configurações
+- [x] Exibir status de sincronização no Gerenciamento de Agenda e Calendários
+
+## Identidade Visual no Navegador
+- [x] Alterar título do site no `index.html` ("FarollBr")
+- [x] Substituir favicon pelo logotipo do FarollBr
+- [x] Atualizar metadados (descrição, autor, OpenGraph)
+
+## Correção de Bugs e Persistência
+- [x] Restaurar botão "Editar" (Gerenciar Agenda) no Calendário Profissional
+- [x] Restaurar botão "Editar" (Calendário Pessoal) no Calendário do Cliente
+- [x] Corrigir persistência do toggle de sincronização Google no Supabase
+- [x] Implementar persistência de Bloqueios e Eventos Pessoais no Supabase
+- [x] Melhorar sincronização simulada com Google para salvar dados no DB
+- [x] Validar fluxo completo de agendamento/bloqueio pós-refatoração (V4)
+- [x] Unificar Auth ID e Profile ID em toda a persistência do calendário (V4)

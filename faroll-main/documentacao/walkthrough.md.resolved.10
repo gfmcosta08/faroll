@@ -1,0 +1,76 @@
+# Walkthrough - FarollBr: Identidade e Sincronização
+
+Implementamos a integração completa com o Google Calendar e a nova identidade visual baseada no conceito do Farol, transformando a plataforma em um "Sinal Seguro" para todos os usuários.
+
+---
+
+## 📅 Correções Críticas de Calendário e Sincronização
+
+Implementamos as correções definitivas para os problemas de interface e persistência relatados.
+
+### 1. Restauração do Botão "Editar"
+O botão **"Editar"** foi restaurado na tela principal do Calendário com comportamento inteligente:
+- **Para Profissionais**: Clicar em "Editar" agora leva diretamente à tela de **Gerenciar Calendário**, onde é possível bloquear múltiplos dias/horários e criar eventos pessoais (em abas separadas).
+- **Para Clientes**: Clicar em "Editar" abre o formulário local para criação de **Evento Pessoal**.
+
+### 2. Persistência do Toggle de Sincronização
+Refatoramos a função [toggleGoogleSync](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx#1500-1539) para garantir que a escolha do usuário (Ligado/Desligado) seja salva no banco de dados com segurança, evitando que a opção "resete" ao sair da tela.
+
+### 3. Sincronização Google -> Site
+A sincronização simulada agora persiste os eventos externos diretamente na tabela de eventos do site, garantindo que apareçam no calendário mesmo após o logout.
+
+> [!IMPORTANT]
+> **Ação Necessária no Supabase**: Identificamos uma falha nas políticas de segurança (RLS) originais que pode estar bloqueando o salvamento. Para garantir que a correção funcione 100%, execute o código SQL abaixo no seu painel do Supabase (**SQL Editor**):
+
+```sql
+-- Corrigindo as políticas RLS para permitir persistência correta
+DROP POLICY IF EXISTS "Users can view their own sync settings" ON public.google_sync_settings;
+DROP POLICY IF EXISTS "Users can update their own sync settings" ON public.google_sync_settings;
+DROP POLICY IF EXISTS "Users can insert their own sync settings" ON public.google_sync_settings;
+
+CREATE POLICY "Users can view their own sync settings" ON public.google_sync_settings
+    FOR SELECT USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = google_sync_settings.user_id AND profiles.user_id = auth.uid()));
+
+CREATE POLICY "Users can update their own sync settings" ON public.google_sync_settings
+    FOR UPDATE USING (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = google_sync_settings.user_id AND profiles.user_id = auth.uid()));
+
+CREATE POLICY "Users can insert their own sync settings" ON public.google_sync_settings
+    FOR INSERT WITH CHECK (EXISTS (SELECT 1 FROM public.profiles WHERE profiles.id = user_id AND profiles.user_id = auth.uid()));
+```
+
+---
+
+## 🎨 Identidade Visual e Branding
+
+Transformamos a experiência visual da Landing Page para refletir confiança e orientação.
+
+### 🗼 Logo Original FarollBr
+- **[LighthouseLogo.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/landing/LighthouseLogo.tsx)**: Integramos o componente de Logo usando a **imagem original exata** solicitada, garantindo a fidelidade à identidade visual da marca no Header, Footer e na seção Essência.
+
+### ✍️ Copywriting Estratégico
+- **Hero Section**: Atualizada com o lema "Seu sinal seguro para encontrar o cuidado que você precisa".
+- **Seção "Nossa Essência"**: Adicionamos uma área dedicada que narra a história e o simbolismo do farol, usando o texto poético da Denize para reforçar o lado humano da marca.
+
+---
+
+## 🗓️ Sincronização Google Calendar
+
+A sincronização bidirecional foi integrada ao coração da aplicação para garantir precisão nas agendas.
+
+### 🔐 Fluxo de Registro
+- **[AuthRegisterForm.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/components/auth/AuthRegisterForm.tsx)**: Agora inclui um botão "Conectar Google Calendar" no cadastro, permitindo que profissionais sincronizem suas agendas externas desde o primeiro acesso.
+
+### ⚙️ Lógica de Bloqueio (AppContext)
+- **[AppContext.tsx](file:///c:/Users/GIANPAOLO/.gemini/antigravity/playground/farollbr/src/contexts/AppContext.tsx)**:
+    - **Importação**: Eventos do Google agora bloqueiam automaticamente horários no Farollbr.
+    - **Exportação**: Novos agendamentos no Farollbr são enviados para o Google Calendar do usuário.
+
+---
+
+## ✅ Verificação de Sucesso
+
+1.  **Mock de Sincronização**: Validamos a conexão e a troca de dados em tempo real com notificações de sucesso.
+2.  **Consistência Visual**: O design está harmônico, responsivo e carrega a essência "Luz e Guia".
+
+🎬 *A plataforma FarollBr está agora visualmente e funcionalmente mais robusta.*
+

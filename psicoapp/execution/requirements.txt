@@ -1,0 +1,3 @@
+# Dependências dos scripts em execution/
+# Adicione aqui os pacotes necessários conforme for criando scripts.
+# Exemplo: requests, python-dotenv, supabase, etc.
