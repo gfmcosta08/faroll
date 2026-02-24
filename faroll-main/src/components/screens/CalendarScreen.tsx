@@ -51,6 +51,8 @@ export function CalendarScreen() {
   const isClient = user?.role === "cliente";
   const isProfessional = user?.role === "profissional";
   const userId = user?.id;
+  // profileId é o UUID do perfil (profiles.id) — usado nos blocos de agenda e eventos Google
+  const profileId = user?.profileId || user?.id;
 
   const clientAppointments = getAppointmentsForClient();
   const professionalAppointments = isProfessional && userId ? getAppointmentsForProfessional(userId) : [];
@@ -62,8 +64,9 @@ export function CalendarScreen() {
   const personalEventsForDate = userPersonalEvents.filter((e) => isSameDay(new Date(e.data), selectedDate));
 
   const getRelevantBlocks = () => {
-    if (isProfessional && userId) {
-      return scheduleBlocks.filter(b => b.profissionalId === userId);
+    if (isProfessional && profileId) {
+      // Inclui tanto blocos pelo profileId quanto pelo userId (auth UID) para cobrir os dois casos
+      return scheduleBlocks.filter(b => b.profissionalId === profileId || b.profissionalId === userId);
     }
     if (isClient) {
       const linkedProfessionalIds = contacts

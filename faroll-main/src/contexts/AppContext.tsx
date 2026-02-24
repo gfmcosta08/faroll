@@ -835,13 +835,30 @@ export function AppProvider({ children, authUser, onGoToLanding }: AppProviderPr
     if (!canManageSchedule()) return;
 
     try {
-      const { error } = await supabase.from('calendar_events').delete().eq('id', blockId);
+      const block = state.scheduleBlocks.find(b => b.id === blockId);
+      const isGoogleSync = block?.tipo === 'google_sync';
 
-      if (error) throw error;
+      if (isGoogleSync) {
+        // Blocos do Google: blockId é o external_id (ID do evento no Google Calendar)
+        // Remove do banco por external_id e também do Google Calendar
+        const { error } = await supabase
+          .from('calendar_events')
+          .delete()
+          .eq('external_id', blockId);
+
+        if (error) throw error;
+
+        // Remove do Google Calendar também
+        if (state.isGoogleSyncEnabled) {
+          deleteEventFromGoogle(blockId);
+        }
+      } else {
+        // Blocos normais: blockId é o UUID do banco
+        const { error } = await supabase.from('calendar_events').delete().eq('id', blockId);
+        if (error) throw error;
+      }
 
       setState(prev => {
-        const block = prev.scheduleBlocks.find(b => b.id === blockId);
-
         const newLog: AuditLog = {
           id: (Date.now() + 1).toString(),
           usuarioId: prev.user?.nome || 'unknown',
@@ -860,7 +877,8 @@ export function AppProvider({ children, authUser, onGoToLanding }: AppProviderPr
           auditLogs: [...prev.auditLogs, newLog],
         };
       });
-      toast.info("Bloqueio removido");
+
+      toast.info(isGoogleSync ? "Evento removido do Google Calendar e da agenda" : "Bloqueio removido");
     } catch (e) {
       console.error('Erro ao remover bloqueio:', e);
       toast.error("Erro ao remover bloqueio do banco de dados");

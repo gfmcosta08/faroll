@@ -278,7 +278,9 @@ function AuthenticatedApp() {
   // Permite que usuários autenticados voltem à LandingPage pelo logo
   const [overrideLanding, setOverrideLanding] = useState(false);
 
-  if (loading) {
+  // Só mostra loading quando realmente não há sessão ainda (primeiro carregamento).
+  // Se já temos usuário, qualquer refresh silencioso (troca de aba) não deve exibir loading.
+  if (loading && !user) {
     return <LoadingScreen />;
   }
 
