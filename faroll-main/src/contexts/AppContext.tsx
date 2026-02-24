@@ -1036,6 +1036,7 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
     const isPrestadorNoVinculo = userId === gcoin.profissionalId;
     const isConsumidorNoVinculo = userId === gcoin.clienteId;
 
+    console.log('[REGRA DE OURO] Papel no vínculo:', {
       userId,
       professionalId,
       gcoinProfissionalId: gcoin.profissionalId,
