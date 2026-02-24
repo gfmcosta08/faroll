@@ -1178,7 +1178,7 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
       auditLogs: [...prev.auditLogs, newLog],
     }));
 
-    // Log no console para debug (modo teste)
+    console.log('[AUDIT LOG]', {
       usuario: newLog.usuarioNome,
       role: newLog.usuarioRole,
       acao: newLog.acao,
