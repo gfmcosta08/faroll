@@ -85,7 +85,8 @@ interface AppContextType extends AppState {
   login: (nome: string, role: 'cliente' | 'profissional') => void;
   logout: () => void;
   navigate: (screen: AppScreen) => void;
-  goBack: () => void; // Função para voltar à tela anterior
+  goBack: () => void;
+  goToLanding: () => void;
   selectProfessional: (professional: Professional) => void;
   selectDependent: (dependent: Dependent) => void;
   addDependent: (dependent: Omit<Dependent, 'id'>) => void;
@@ -159,10 +160,11 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 
 interface AppProviderProps {
   children: ReactNode;
-  authUser?: AuthUser; // Usuário autenticado via Supabase
+  authUser?: AuthUser;
+  onGoToLanding?: () => void;
 }
 
-export function AppProvider({ children, authUser }: AppProviderProps) {
+export function AppProvider({ children, authUser, onGoToLanding }: AppProviderProps) {
   const { session, signInWithGoogle } = useAuthContext();
   // GUARD: Verificação defensiva para evitar crash se authUser veio incompleto
   const safeAuthUser = authUser && authUser.profileId && authUser.nome && authUser.role
@@ -1919,6 +1921,7 @@ export function AppProvider({ children, authUser }: AppProviderProps) {
         logout,
         navigate,
         goBack,
+        goToLanding: onGoToLanding || (() => navigate('galeria')),
         selectProfessional,
         selectDependent,
         addDependent,

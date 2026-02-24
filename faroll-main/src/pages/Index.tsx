@@ -275,6 +275,8 @@ function AppContent() {
 function AuthenticatedApp() {
   const { user, loading, isAuthenticated, error } = useAuthContext();
   const [showLanding, setShowLanding] = useState(true);
+  // Permite que usuários autenticados voltem à LandingPage pelo logo
+  const [overrideLanding, setOverrideLanding] = useState(false);
 
   if (loading) {
     return <LoadingScreen />;
@@ -291,8 +293,18 @@ function AuthenticatedApp() {
     return <UserDataRecoveryScreen error={error} />;
   }
 
+  // Usuário autenticado que clicou no logo: mostra LandingPage com botão para voltar ao app
+  if (overrideLanding) {
+    return (
+      <LandingPage
+        onLogin={() => setOverrideLanding(false)}
+        onRegister={() => setOverrideLanding(false)}
+      />
+    );
+  }
+
   return (
-    <AppProvider authUser={user}>
+    <AppProvider authUser={user} onGoToLanding={() => setOverrideLanding(true)}>
       <AppContent />
     </AppProvider>
   );
