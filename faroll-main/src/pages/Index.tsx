@@ -25,7 +25,7 @@ import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Component, ErrorInfo, ReactNode, useState } from "react";
+import { Component, ErrorInfo, ReactNode, useState, useEffect } from "react";
 
 class ScreenErrorBoundary extends Component<
   { children: ReactNode; screenName: string; onReset: () => void },
@@ -274,21 +274,32 @@ function AppContent() {
 
 function AuthenticatedApp() {
   const { user, loading, isAuthenticated, error } = useAuthContext();
-  const [showLanding, setShowLanding] = useState(true);
+  // true = mostrar tela de login/cadastro (usuário clicou Entrar/Cadastre-se)
+  const [showAuthForm, setShowAuthForm] = useState(false);
   // Permite que usuários autenticados voltem à LandingPage pelo logo
   const [overrideLanding, setOverrideLanding] = useState(false);
 
+  // Ao ficar deslogado, sempre mostrar a landing (nunca ficar preso na tela de login)
+  useEffect(() => {
+    if (!isAuthenticated) setShowAuthForm(false);
+  }, [isAuthenticated]);
+
   // Só mostra loading quando realmente não há sessão ainda (primeiro carregamento).
-  // Se já temos usuário, qualquer refresh silencioso (troca de aba) não deve exibir loading.
   if (loading && !user) {
     return <LoadingScreen />;
   }
 
+  // Não autenticado: landing por padrão; só mostra login/cadastro se clicou em Entrar/Cadastre-se
   if (!isAuthenticated) {
-    if (showLanding) {
-      return <LandingPage onLogin={() => setShowLanding(false)} onRegister={() => setShowLanding(false)} />;
+    if (showAuthForm) {
+      return <AuthScreen onBackToLanding={() => setShowAuthForm(false)} />;
     }
-    return <AuthScreen onBackToLanding={() => setShowLanding(true)} />;
+    return (
+      <LandingPage
+        onLogin={() => setShowAuthForm(true)}
+        onRegister={() => setShowAuthForm(true)}
+      />
+    );
   }
 
   if (!user) {

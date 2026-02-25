@@ -27,6 +27,7 @@ import {
 import { AuthUser } from '@/hooks/useAuth';
 import { useAuthContext } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
+import { SUPABASE_URL } from "@/integrations/supabase/env";
 
 // Permissões padrão para Dependente (menor)
 export const defaultDependentePermissions: DependentePermissions = {
@@ -1620,7 +1621,7 @@ export function AppProvider({ children, authUser, onGoToLanding }: AppProviderPr
       if (!currentSession?.access_token) return null;
 
       const res = await fetch(
-        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/google-token-refresh`,
+        `${SUPABASE_URL}/functions/v1/google-token-refresh`,
         {
           method: 'POST',
           headers: {

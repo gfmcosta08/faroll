@@ -16,6 +16,9 @@ export default {
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
         display: ['Plus Jakarta Sans', 'system-ui', 'sans-serif'],
+        outfit: ['Outfit', 'system-ui', 'sans-serif'],
+        cormorant: ['Cormorant Garamond', 'Georgia', 'serif'],
+        mono: ['JetBrains Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -77,6 +80,12 @@ export default {
           gold: "hsl(45 100% 70%)",
           coral: "hsl(340 100% 71%)",
         },
+        landing: {
+          moss: "var(--landing-moss)",
+          clay: "var(--landing-clay)",
+          cream: "var(--landing-cream)",
+          charcoal: "var(--landing-charcoal)",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -84,6 +93,9 @@ export default {
         sm: "calc(var(--radius) - 4px)",
         xl: "1rem",
         "2xl": "1.25rem",
+        "landing-2xl": "var(--landing-radius)",
+        "landing-3xl": "var(--landing-radius-lg)",
+        "landing-footer": "var(--landing-radius-footer)",
       },
       boxShadow: {
         card: "var(--shadow-card)",
