@@ -4,14 +4,17 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useApp } from '@/contexts/AppContext';
-import { MapPin, Globe, FileCheck, MessageCircle, Clock } from 'lucide-react';
+import { useAuthContext } from '@/contexts/AuthContext';
+import { MapPin, Globe, FileCheck, MessageCircle, Clock, LayoutDashboard, ExternalLink } from 'lucide-react';
 import { Header } from '@/components/layout/Header';
 import { Navigation } from '@/components/layout/Navigation';
 import { AutomationOfferCard } from '@/components/AutomationOfferCard';
 import { professions } from '@/data/professions';
+import { Link } from 'react-router-dom';
 
 export function ProfileScreen() {
   const { selectedProfessional, navigate, getProfessionalSettings } = useApp();
+  const { user } = useAuthContext();
 
   if (!selectedProfessional) {
     return null;
@@ -103,6 +106,33 @@ export function ProfileScreen() {
                 <MessageCircle className="h-5 w-5" />
                 Iniciar Chat
               </Button>
+
+              {/* Acessar painel — só aparece se o admin liberou o acesso ao produto contratado */}
+              {(user?.acessoHealthApp || user?.acessoFoxImobiliario) && (
+                <div className="pt-4 border-t border-border space-y-2">
+                  <p className="font-semibold text-sm text-muted-foreground">Seus painéis</p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    {user?.acessoHealthApp && (
+                      <Button asChild variant="secondary" className="gap-2 flex-1">
+                        <Link to="/app/saude">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Acessar Health-App
+                          <ExternalLink className="h-3 w-3" />
+                        </Link>
+                      </Button>
+                    )}
+                    {user?.acessoFoxImobiliario && (
+                      <Button asChild variant="secondary" className="gap-2 flex-1">
+                        <Link to="/app/imoveis">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Acessar Fox Imobiliário
+                          <ExternalLink className="h-3 w-3" />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
             </CardContent>
           </Card>
 

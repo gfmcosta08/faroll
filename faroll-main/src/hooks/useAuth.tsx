@@ -11,6 +11,10 @@ export interface AuthUser {
   role: AppRole;
   profileId: string;
   avatarUrl?: string;
+  /** Liberado pelo admin após contratação do Health-App */
+  acessoHealthApp?: boolean;
+  /** Liberado pelo admin após contratação do Fox Imobiliário */
+  acessoFoxImobiliario?: boolean;
 }
 
 export interface AuthState {
@@ -44,7 +48,7 @@ export const useAuth = () => {
       // Busca simplificada: Pega apenas o essencial
       const { data: profile, error: profileError } = await supabase
         .from("profiles")
-        .select("id, nome, email, avatar_url")
+        .select("id, nome, email, avatar_url, acesso_health_app, acesso_fox_imobiliario")
         .eq("user_id", authUser.id)
         .maybeSingle();
 
@@ -74,6 +78,8 @@ export const useAuth = () => {
         role,
         profileId: profile?.id || authUser.id,
         avatarUrl: profile?.avatar_url,
+        acessoHealthApp: profile?.acesso_health_app ?? false,
+        acessoFoxImobiliario: profile?.acesso_fox_imobiliario ?? false,
       };
     } catch (error) {
       console.error("[auth] Erro crítico no fetchUserData:", error);

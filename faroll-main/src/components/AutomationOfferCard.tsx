@@ -19,7 +19,7 @@ interface OfferConfig {
 function getOfferConfig(profession: Profession): OfferConfig | null {
   if (profession.categoria === 'saude') {
     return {
-      titulo: 'Psicoapp',
+      titulo: 'Health-App',
       subtitulo: 'Gestão inteligente para sua clínica',
       descricao:
         'Automatize sua agenda, prontuários e cobranças. Foque no que importa: seus pacientes.',
@@ -29,8 +29,8 @@ function getOfferConfig(profession: Profession): OfferConfig | null {
         'Gestão financeira de sessões e planos',
         'Lista de espera inteligente',
       ],
-      ctaLabel: 'Conhecer o Psicoapp',
-      ctaHref: 'https://psicoapp.com.br',
+      ctaLabel: 'Conhecer o Health-App',
+      ctaHref: '/app/saude',
       accentColor: 'blue',
       icon: <Users size={28} className="text-blue-400" />,
     };
@@ -38,8 +38,8 @@ function getOfferConfig(profession: Profession): OfferConfig | null {
 
   if (profession.categoria === 'imobiliario') {
     return {
-      titulo: 'APP FOX',
-      subtitulo: 'Secretária virtual para corretores',
+      titulo: 'Fox Imobiliário',
+      subtitulo: 'Automação para corretores e imobiliárias',
       descricao:
         'Atenda leads pelo WhatsApp 24h com IA, gerencie imóveis e acompanhe seu funil de vendas em tempo real.',
       beneficios: [
@@ -48,8 +48,8 @@ function getOfferConfig(profession: Profession): OfferConfig | null {
         'Gestão completa do portfólio de imóveis',
         'Dashboard com métricas e ranking da equipe',
       ],
-      ctaLabel: 'Conhecer o APP FOX',
-      ctaHref: 'https://appfox.com.br',
+      ctaLabel: 'Conhecer o Fox Imobiliário',
+      ctaHref: '/app/imoveis',
       accentColor: 'orange',
       icon: <Building2 size={28} className="text-orange-400" />,
     };
@@ -115,11 +115,9 @@ export function AutomationOfferCard({ profession }: AutomationOfferCardProps) {
         ))}
       </ul>
 
-      {/* CTA */}
+      {/* CTA — mesmo domínio: /app/saude ou /app/imoveis */}
       <a
         href={offer.ctaHref}
-        target="_blank"
-        rel="noopener noreferrer"
         className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all ${s.btn}`}
       >
         {offer.ctaLabel}

@@ -20,13 +20,13 @@ export function LandingNavbar({ onLogin, onRegister }: LandingNavbarProps) {
     <nav
       className={`fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-4xl transition-all duration-300 rounded-full ${
         scrolled
-          ? "bg-white/60 backdrop-blur-md border border-landing-moss/10 shadow-lg"
-          : "bg-transparent"
+          ? "bg-white/70 backdrop-blur-xl border border-white/20 shadow-xl shadow-black/10"
+          : "bg-white/10 backdrop-blur-md border border-white/20"
       }`}
     >
       <div className="flex items-center justify-between px-6 py-3">
         <a href="#" className="flex items-center" aria-label="FarolBR início">
-          <LighthouseLogo size={40} light={!scrolled} landing={scrolled} />
+          <LighthouseLogo size={48} light={!scrolled} landing={scrolled} />
         </a>
         <div className="flex items-center gap-2">
           <Button

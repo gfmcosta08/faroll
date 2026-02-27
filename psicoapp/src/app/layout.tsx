@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Psicoapp | Gestão de Clínicas",
+  title: "Health-App | Gestão de Clínicas",
   description: "Agenda inteligente e gestão para clínicas multiespecialidade",
 };
 

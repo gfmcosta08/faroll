@@ -41,7 +41,7 @@ export default async function AppLayout({
       <aside className="w-56 bg-slate-900 text-white flex flex-col">
         <div className="p-4 border-b border-slate-700">
           <Link href="/dashboard" className="font-bold text-lg">
-            Psicoapp
+            Health-App
           </Link>
         </div>
         <nav className="flex-1 p-4 space-y-1">

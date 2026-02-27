@@ -3,8 +3,9 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useGSAPContext } from "@/hooks/useGSAPContext";
 
+// Imagem tech/workspace em vez de natureza
 const PHILOSOPHY_IMAGE =
-  "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1920&q=80";
+  "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1920&q=80";
 
 export function LandingPhilosophy() {
   const sectionRef = useRef<HTMLElement>(null);

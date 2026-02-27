@@ -34,25 +34,25 @@ const PLANS = [
 
 export function LandingMembership({ onRegister }: LandingMembershipProps) {
   return (
-    <section className="py-20 md:py-28 px-4 bg-landing-cream">
+    <section className="py-14 md:py-20 px-4 bg-landing-cream">
       <div className="container mx-auto max-w-5xl">
-        <h2 className="font-outfit font-bold text-3xl md:text-4xl text-landing-charcoal text-center tracking-tight mb-4">
+        <h2 className="font-outfit font-bold text-2xl md:text-3xl text-landing-charcoal text-center tracking-tight mb-2">
           Para cada perfil
         </h2>
-        <p className="text-landing-moss/90 text-center max-w-2xl mx-auto mb-14">
+        <p className="text-landing-moss/80 text-center max-w-2xl mx-auto mb-10 text-sm">
           Cliente, profissional ou empresa: encontre o plano que combina com você.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-4 items-stretch">
           {PLANS.map((plan) => {
             const Icon = plan.Icon;
             return (
               <div
                 key={plan.id}
-                className={`rounded-landing-2xl border p-8 flex flex-col transition-all duration-300 overflow-hidden ${
+                className={`rounded-2xl border p-6 flex flex-col transition-all duration-300 overflow-hidden ${
                   plan.highlighted
-                    ? "bg-landing-moss border-landing-moss text-landing-cream shadow-xl scale-105 md:scale-105"
-                    : "bg-white border-landing-moss/15 text-landing-charcoal hover:border-landing-moss/30"
+                    ? "bg-landing-moss/95 backdrop-blur-sm border-landing-moss text-landing-cream shadow-xl shadow-black/10"
+                    : "bg-white/70 backdrop-blur-sm border-white/50 text-landing-charcoal shadow-lg shadow-black/5 hover:bg-white/90"
                 }`}
               >
                 <div

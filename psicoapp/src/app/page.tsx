@@ -5,7 +5,7 @@ export default function HomePage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-slate-100">
       <main className="text-center max-w-2xl px-6">
         <h1 className="text-4xl font-bold text-indigo-900 mb-4">
-          Psicoapp
+          Health-App
         </h1>
         <p className="text-lg text-slate-600 mb-8">
           Gestão inteligente para clínicas multiespecialidade.

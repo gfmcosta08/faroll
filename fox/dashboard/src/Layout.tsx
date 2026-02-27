@@ -29,7 +29,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             <span className="text-orange-500 font-black text-[10px] uppercase tracking-[0.3em]">AI Platform</span>
           </div>
           <h1 className="text-3xl font-black tracking-tighter bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-            APP FOX
+            Fox Imobiliário
           </h1>
         </div>
 

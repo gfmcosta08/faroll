@@ -1,4 +1,4 @@
-# Psicoapp
+# Health-App
 
 Gestão inteligente para clínicas multiespecialidade.
 

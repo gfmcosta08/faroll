@@ -38,7 +38,7 @@ export default function SetupPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="text-xl font-bold text-indigo-600">
-            Psicoapp
+            Health-App
           </Link>
         </div>
         <h1 className="text-2xl font-bold text-slate-900 mb-4">

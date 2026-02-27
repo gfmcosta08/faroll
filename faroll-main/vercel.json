@@ -1,8 +1,9 @@
 {
   "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
+    { "source": "/app/saude", "destination": "https://psicoapp-eosin.vercel.app/app/saude" },
+    { "source": "/app/saude/(.*)", "destination": "https://psicoapp-eosin.vercel.app/app/saude/$1" },
+    { "source": "/app/imoveis", "destination": "https://dashboard-coral-two-64.vercel.app/app/imoveis" },
+    { "source": "/app/imoveis/(.*)", "destination": "https://dashboard-coral-two-64.vercel.app/app/imoveis/$1" },
+    { "source": "/(.*)", "destination": "/index.html" }
   ]
 }

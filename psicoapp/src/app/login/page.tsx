@@ -34,7 +34,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
       <div className="w-full max-w-sm">
         <h1 className="text-2xl font-bold text-slate-900 mb-6 text-center">
-          Entrar no Psicoapp
+          Entrar no Health-App
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>

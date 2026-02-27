@@ -627,6 +627,8 @@ export type Database = {
       }
       profiles: {
         Row: {
+          acesso_fox_imobiliario: boolean | null
+          acesso_health_app: boolean | null
           antecedencia_agendamento: number | null
           antecedencia_cancelamento: number | null
           avatar_url: string | null
@@ -655,6 +657,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          acesso_fox_imobiliario?: boolean | null
+          acesso_health_app?: boolean | null
           antecedencia_agendamento?: number | null
           antecedencia_cancelamento?: number | null
           avatar_url?: string | null
@@ -683,6 +687,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          acesso_fox_imobiliario?: boolean | null
+          acesso_health_app?: boolean | null
           antecedencia_agendamento?: number | null
           antecedencia_cancelamento?: number | null
           avatar_url?: string | null

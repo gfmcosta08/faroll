@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { useAuthContext } from "@/contexts/AuthContext";
-import { Save, Loader2, X, Plus, Minus, Search, ArrowLeft, UserPlus, ChevronRight, User, Shield, Bell, Calendar } from "lucide-react";
+import { Save, Loader2, X, Plus, Minus, Search, ArrowLeft, UserPlus, ChevronRight, User, Shield, Bell, Calendar, LayoutDashboard, ExternalLink } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -20,6 +20,7 @@ import { Header } from "@/components/layout/Header";
 import { Navigation } from "@/components/layout/Navigation";
 import { Separator } from "@/components/ui/separator";
 import { useApp } from "@/contexts/AppContext";
+import { Link } from "react-router-dom";
 
 interface Profession {
   id: string;
@@ -408,6 +409,33 @@ export function ConfigScreen() {
                   />
                 )}
               </div>
+
+              {/* Seus painéis — só aparece se admin liberou acesso */}
+              {(user?.acessoHealthApp || user?.acessoFoxImobiliario) && (
+                <div className="pb-4 border-b border-border space-y-2">
+                  <p className="font-semibold text-sm text-muted-foreground">Seus painéis</p>
+                  <div className="flex flex-col sm:flex-row gap-2">
+                    {user?.acessoHealthApp && (
+                      <Button asChild variant="secondary" className="gap-2 flex-1">
+                        <Link to="/app/saude">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Acessar Health-App
+                          <ExternalLink className="h-3 w-3" />
+                        </Link>
+                      </Button>
+                    )}
+                    {user?.acessoFoxImobiliario && (
+                      <Button asChild variant="secondary" className="gap-2 flex-1">
+                        <Link to="/app/imoveis">
+                          <LayoutDashboard className="h-4 w-4" />
+                          Acessar Fox Imobiliário
+                          <ExternalLink className="h-3 w-3" />
+                        </Link>
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Dados Pessoais */}
               <div className="space-y-4">

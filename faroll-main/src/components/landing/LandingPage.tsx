@@ -53,7 +53,7 @@ export function LandingPage({ onLogin, onRegister }: LandingPageProps) {
     try {
       setLoading(true);
 
-      // Carregar top 5 profissionais mais bem avaliados
+      // Carregar profissionais em destaque (com ou sem avaliações)
       const { data: professionals, error: profError } = await supabase
         .from("profiles")
         .select(`
@@ -67,7 +67,6 @@ export function LandingPage({ onLogin, onRegister }: LandingPageProps) {
           especialidades
         `)
         .eq("perfil_ativo", true)
-        .gt("rating_count", 0)
         .order("rating_average", { ascending: false })
         .order("rating_count", { ascending: false })
         .limit(6);
@@ -178,77 +177,116 @@ export function LandingPage({ onLogin, onRegister }: LandingPageProps) {
       <LandingHero />
       <LandingFeatures />
       <LandingPhilosophy />
-      <section id="como-funciona" aria-label="Como funciona">
-        <LandingProtocol />
-      </section>
+      <LandingProtocol />
       <LandingMembership onRegister={onRegister} />
       {(loading || topProfessionals.length > 0) && (
-        <section className="py-16 px-4 bg-white/60">
+        <section className="py-14 px-4 bg-landing-cream" aria-label="Profissionais em destaque">
           <div className="container mx-auto max-w-5xl">
-            <h2 className="font-outfit font-bold text-3xl text-landing-charcoal text-center tracking-tight mb-4">
+            <h2 className="font-outfit font-bold text-2xl md:text-3xl text-landing-charcoal text-center tracking-tight mb-2">
               Profissionais em destaque
             </h2>
-            <p className="text-landing-moss/90 text-center mb-10">
-              Conheça alguns dos profissionais mais bem avaliados na plataforma.
+            <p className="text-landing-moss/80 text-center text-sm mb-8">
+              Conheça profissionais da plataforma.
             </p>
             {loading ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {[1, 2, 3].map((i) => (
-                  <Card key={i} className="animate-pulse rounded-landing-2xl">
-                    <CardHeader>
-                      <div className="w-20 h-20 bg-landing-moss/10 rounded-full mx-auto" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="h-4 bg-landing-moss/10 rounded mb-2" />
-                      <div className="h-3 bg-landing-moss/10 rounded w-2/3" />
-                    </CardContent>
-                  </Card>
+                  <div key={i} className="animate-pulse rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 p-6 h-64" />
                 ))}
               </div>
             ) : topProfessionals.length === 0 ? (
-              <p className="text-center text-landing-moss/80 py-8">Nenhum profissional em destaque no momento.</p>
+              <p className="text-center text-landing-moss/70 py-8 text-sm">Nenhum profissional em destaque no momento.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {topProfessionals.slice(0, 6).map((professional) => (
-                  <Card
+                  <div
                     key={professional.id}
-                    className="rounded-landing-2xl border-landing-moss/15 hover:border-landing-moss/30 transition-colors"
+                    className="rounded-2xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-lg shadow-black/5 overflow-hidden hover:bg-white/90 transition-colors"
                   >
-                    <CardHeader className="text-center pb-4">
-                      <Avatar className="w-24 h-24 mx-auto mb-3 ring-2 ring-landing-moss/20">
+                    <div className="p-5 text-center">
+                      <Avatar className="w-20 h-20 mx-auto mb-3 ring-2 ring-landing-moss/20 ring-offset-2 ring-offset-white/50">
                         <AvatarImage src={professional.avatar_url || undefined} alt={professional.nome} />
-                        <AvatarFallback className="text-lg bg-landing-moss text-landing-cream">
+                        <AvatarFallback className="text-base bg-landing-moss text-landing-cream font-mono">
                           {getInitials(professional.nome)}
                         </AvatarFallback>
                       </Avatar>
-                      <h4 className="font-outfit font-semibold text-lg text-landing-charcoal">{professional.nome}</h4>
-                      <p className="text-sm text-landing-moss/90">{professional.profissao}</p>
-                    </CardHeader>
-                    <CardContent className="space-y-3">
+                      <h4 className="font-outfit font-semibold text-landing-charcoal">{professional.nome}</h4>
+                      <p className="text-xs text-landing-moss/80 font-mono">{professional.profissao}</p>
+                    </div>
+                    <div className="px-5 pb-4 space-y-2">
                       {professional.descricao && (
-                        <p className="text-sm text-landing-moss/80 line-clamp-3">{professional.descricao}</p>
+                        <p className="text-xs text-landing-moss/70 line-clamp-2">{professional.descricao}</p>
                       )}
                       {professional.specialization_names.length > 0 && (
                         <div className="flex flex-wrap gap-1 justify-center">
                           {professional.specialization_names.slice(0, 2).map((spec, idx) => (
-                            <Badge key={idx} className="text-xs bg-landing-moss/10 text-landing-moss border-0">
+                            <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-landing-moss/10 text-landing-moss font-mono">
                               {spec}
-                            </Badge>
+                            </span>
                           ))}
                         </div>
                       )}
-                    </CardContent>
-                    <CardFooter className="flex flex-col items-center gap-2 pt-4 border-t border-landing-moss/10">
-                      {renderStars(professional.rating_average, professional.rating_count)}
-                      <Button size="sm" className="w-full bg-landing-clay hover:bg-landing-clay/90 text-white" onClick={onRegister}>
-                        <Calendar className="w-4 h-4 mr-2" />
+                      <div className="flex items-center justify-center gap-1 pt-1">
+                        {renderStars(professional.rating_average, professional.rating_count)}
+                      </div>
+                      <Button size="sm" className="w-full mt-2 bg-landing-clay hover:bg-landing-clay/90 text-white text-xs" onClick={onRegister}>
+                        <Calendar className="w-3 h-3 mr-1" />
                         Ver perfil
                       </Button>
-                    </CardFooter>
-                  </Card>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
+          </div>
+        </section>
+      )}
+      {(loading || contentCards.length > 0) && (
+        <section className="py-14 px-4 bg-white/40" aria-label="Informativos">
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="font-outfit font-bold text-2xl md:text-3xl text-landing-charcoal text-center tracking-tight mb-2">
+              Notícias e informativos
+            </h2>
+            <p className="text-landing-moss/80 text-center text-sm mb-8">
+              Artigos e novidades em formato jornal.
+            </p>
+            {loading ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="animate-pulse rounded-2xl bg-white/60 h-64 border border-white/50" />
+                <div className="animate-pulse rounded-2xl bg-white/60 h-64 border border-white/50" />
+              </div>
+            ) : contentCards.length > 0 ? (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {contentCards.slice(0, 4).map((card) => (
+                  <article
+                    key={card.id}
+                    onClick={() => handleContentClick(card.id)}
+                    className="rounded-2xl bg-white/70 backdrop-blur-sm border border-white/50 shadow-lg shadow-black/5 overflow-hidden cursor-pointer hover:bg-white/90 transition-colors group"
+                  >
+                    {card.imagem_capa && (
+                      <div className="aspect-video overflow-hidden">
+                        <img
+                          src={card.imagem_capa}
+                          alt={card.titulo}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+                    <div className="p-5">
+                      <span className="text-[10px] font-mono uppercase tracking-wider text-landing-clay">
+                        {card.tipo === "publicitario" ? "Especial" : "Artigo"}
+                      </span>
+                      <h3 className="font-outfit font-semibold text-landing-charcoal mt-1 line-clamp-2 group-hover:text-landing-clay transition-colors">
+                        {card.titulo}
+                      </h3>
+                      {card.subtitulo && <p className="text-xs text-landing-moss/80 mt-0.5">{card.subtitulo}</p>}
+                      {card.preview && <p className="text-xs text-landing-moss/70 mt-2 line-clamp-2">{card.preview}</p>}
+                      <p className="text-xs font-mono text-landing-clay mt-3 group-hover:underline">Ler mais →</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : null}
           </div>
         </section>
       )}

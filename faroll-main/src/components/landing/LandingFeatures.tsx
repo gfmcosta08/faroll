@@ -4,18 +4,18 @@ import { CursorScheduler } from "./CursorScheduler";
 
 export function LandingFeatures() {
   return (
-    <section className="py-20 md:py-28 px-4 bg-landing-cream">
+    <section className="py-16 md:py-20 px-4 bg-landing-cream">
       <div className="container mx-auto max-w-6xl">
-        <h2 className="font-outfit font-bold text-3xl md:text-4xl text-landing-charcoal text-center tracking-tight mb-4" id="features-heading">
+        <h2 className="font-outfit font-bold text-2xl md:text-3xl text-landing-charcoal text-center tracking-tight mb-2" id="features-heading">
           Ferramentas que trabalham por você
         </h2>
-        <p className="text-landing-moss/90 text-center max-w-2xl mx-auto mb-16">
-          Busca inteligente, agenda ao vivo e agendamento visual para conectar você ao profissional ideal.
+        <p className="text-landing-moss/80 text-center max-w-2xl mx-auto mb-10 text-sm">
+          Busca inteligente, agenda ao vivo e agendamento visual.
         </p>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8 items-start">
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-6 items-start">
+          <div className="flex flex-col items-center text-center rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 p-6 shadow-lg shadow-black/5">
+            <div className="mb-3">
               <DiagnosticShuffler />
             </div>
             <h3 className="font-outfit font-semibold text-lg text-landing-moss">Busca inteligente</h3>
@@ -24,8 +24,8 @@ export function LandingFeatures() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-4 w-full flex justify-center">
+          <div className="flex flex-col items-center text-center rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 p-6 shadow-lg shadow-black/5">
+            <div className="mb-3 w-full flex justify-center">
               <TelemetryTypewriter />
             </div>
             <h3 className="font-outfit font-semibold text-lg text-landing-moss">Agenda ao vivo</h3>
@@ -34,8 +34,8 @@ export function LandingFeatures() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center text-center">
-            <div className="mb-4">
+          <div className="flex flex-col items-center text-center rounded-2xl bg-white/60 backdrop-blur-sm border border-white/50 p-6 shadow-lg shadow-black/5">
+            <div className="mb-3">
               <CursorScheduler />
             </div>
             <h3 className="font-outfit font-semibold text-lg text-landing-moss">Agendamento</h3>

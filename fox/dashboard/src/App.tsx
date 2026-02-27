@@ -21,7 +21,7 @@ function PublicRoute({ children }: { children: ReactNode }) {
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter basename="/app/imoveis">
         <Routes>
           <Route path="/login"          element={<PublicRoute><Login /></PublicRoute>} />
           <Route path="/"               element={<PrivateRoute><Dashboard /></PrivateRoute>} />
