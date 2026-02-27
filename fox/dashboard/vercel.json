@@ -1,6 +1,9 @@
 {
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
   "rewrites": [
     { "source": "/app/imoveis/assets/(.*)", "destination": "/assets/$1" },
+    { "source": "/app/imoveis/", "destination": "/index.html" },
     { "source": "/app/imoveis/(.*)", "destination": "/index.html" },
     { "source": "/app/imoveis", "destination": "/index.html" }
   ]
