@@ -1,4 +1,14 @@
 {
+  "headers": [
+    {
+      "source": "/",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    },
+    {
+      "source": "/index.html",
+      "headers": [{ "key": "Cache-Control", "value": "public, max-age=0, must-revalidate" }]
+    }
+  ],
   "rewrites": [
     { "source": "/app/saude", "destination": "https://psicoapp-eosin.vercel.app/app/saude" },
     { "source": "/app/saude/(.*)", "destination": "https://psicoapp-eosin.vercel.app/app/saude/$1" },
