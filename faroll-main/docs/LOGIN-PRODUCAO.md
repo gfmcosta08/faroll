@@ -94,13 +94,20 @@ Se ainda der erro, confira se não há espaço ou quebra de linha no valor de `V
 
 ## 5. Domínio farollbr.com.br abrindo site antigo (mesmo em anônimo)
 
-Se ao **digitar** farollbr.com.br você vê o site antigo e "Invalid API Key", mas ao **clicar no link** da Vercel o site novo abre e o login funciona, o domínio está recebendo build antigo (cache da CDN ou domínio apontando para deploy antigo).
+Se ao **digitar** farollbr.com.br você vê o site antigo e "Invalid API Key", mas ao **clicar no link** da Vercel (Domains ou preview) o site novo abre e o login funciona, a causa é **cache**.
+
+**Por que acontece:**
+- O **link na Vercel** abre o domínio a partir do dashboard; em muitos casos o navegador ou a CDN não têm resposta em cache para esse fluxo, ou a Vercel abre a URL do deploy (ex.: `faroll-main-xxx.vercel.app`), que é sempre o build atual.
+- Ao **digitar** farollbr.com.br na barra de endereço, a requisição usa a **CDN da Vercel (Edge)**. Se a CDN ainda tiver em cache o **index.html** (e os JS) de um deploy antigo (com env vars vazias/erradas), ela devolve esse build → layout antigo e "Invalid API Key".
+- O **index.html** antigo carrega **scripts antigos** nos quais o Vite embutiu as variáveis de ambiente do build da época; se naquele build as vars estavam erradas, o Supabase continua recebendo chave inválida.
 
 **O que foi feito no código:**
-- Em `vercel.json` foram adicionados headers `Cache-Control: public, max-age=0, must-revalidate` para `/` e `/index.html`, para que o HTML da entrada não fique em cache e sempre busque a versão nova após um deploy.
+- Em `vercel.json` foram definidos headers `Cache-Control: no-store, no-cache, must-revalidate` para `/` e `/index.html`, para que o HTML da entrada **não seja armazenado em cache** (nem no navegador nem na CDN) e cada visita busque a versão atual do deploy.
 
 **Passos após cada novo deploy:**
 1. Na Vercel → **Deployments** → confirme que o deploy mais recente está **Ready** e é o de **Production**.
 2. Em **Settings** → **Domains**, confira se `farollbr.com.br` está listado e vinculado a este projeto (o domínio passa a servir o deploy que está como Production).
 3. Aguarde 1–2 minutos após o deploy ficar Ready e teste de novo em **janela anônima** digitando `https://farollbr.com.br`.
 4. Se ainda aparecer o site antigo, na Vercel em **Deployments** → no deploy **novo** (Ready) → abra o deploy e use **Promote to Production** se existir, para garantir que esse deploy seja o que o domínio usa.
+
+**Agora (com o novo header no código):** Depois do próximo deploy, o `no-store` fará com que a CDN e o navegador não guardem o index.html. Assim, ao digitar farollbr.com.br você deve receber sempre o build atual. Faça um **Redeploy com "Clear build cache"** na Vercel para o novo `vercel.json` valer; em 1–2 minutos, teste de novo em aba anônima digitando o domínio.
