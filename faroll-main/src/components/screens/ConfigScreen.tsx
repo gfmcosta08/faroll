@@ -20,7 +20,6 @@ import { Header } from "@/components/layout/Header";
 import { Navigation } from "@/components/layout/Navigation";
 import { Separator } from "@/components/ui/separator";
 import { useApp } from "@/contexts/AppContext";
-import { Link } from "react-router-dom";
 
 interface Profession {
   id: string;
@@ -417,20 +416,20 @@ export function ConfigScreen() {
                   <div className="flex flex-col sm:flex-row gap-2">
                     {user?.acessoHealthApp && (
                       <Button asChild variant="secondary" className="gap-2 flex-1">
-                        <Link to="/app/saude">
+                        <a href="/app/saude">
                           <LayoutDashboard className="h-4 w-4" />
                           Acessar Health-App
                           <ExternalLink className="h-3 w-3" />
-                        </Link>
+                        </a>
                       </Button>
                     )}
                     {user?.acessoFoxImobiliario && (
                       <Button asChild variant="secondary" className="gap-2 flex-1">
-                        <Link to="/app/imoveis">
+                        <a href="/app/imoveis">
                           <LayoutDashboard className="h-4 w-4" />
                           Acessar Fox Imobiliário
                           <ExternalLink className="h-3 w-3" />
-                        </Link>
+                        </a>
                       </Button>
                     )}
                   </div>
