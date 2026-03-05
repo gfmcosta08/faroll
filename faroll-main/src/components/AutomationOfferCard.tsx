@@ -3,6 +3,7 @@ import { Profession } from '@/data/professions';
 
 interface AutomationOfferCardProps {
   profession: Profession;
+  acesso?: boolean;
 }
 
 interface OfferConfig {
@@ -19,7 +20,7 @@ interface OfferConfig {
 function getOfferConfig(profession: Profession): OfferConfig | null {
   if (profession.categoria === 'saude') {
     return {
-      titulo: 'Health-App',
+      titulo: 'Faroll Saúde',
       subtitulo: 'Gestão inteligente para sua clínica',
       descricao:
         'Automatize sua agenda, prontuários e cobranças. Foque no que importa: seus pacientes.',
@@ -29,7 +30,7 @@ function getOfferConfig(profession: Profession): OfferConfig | null {
         'Gestão financeira de sessões e planos',
         'Lista de espera inteligente',
       ],
-      ctaLabel: 'Conhecer o Health-App',
+      ctaLabel: 'Conhecer o Faroll Saúde',
       ctaHref: '/app/saude',
       accentColor: 'blue',
       icon: <Users size={28} className="text-blue-400" />,
@@ -38,7 +39,7 @@ function getOfferConfig(profession: Profession): OfferConfig | null {
 
   if (profession.categoria === 'imobiliario') {
     return {
-      titulo: 'Fox Imobiliário',
+      titulo: 'Faroll Imóveis',
       subtitulo: 'Automação para corretores e imobiliárias',
       descricao:
         'Atenda leads pelo WhatsApp 24h com IA, gerencie imóveis e acompanhe seu funil de vendas em tempo real.',
@@ -48,7 +49,7 @@ function getOfferConfig(profession: Profession): OfferConfig | null {
         'Gestão completa do portfólio de imóveis',
         'Dashboard com métricas e ranking da equipe',
       ],
-      ctaLabel: 'Conhecer o Fox Imobiliário',
+      ctaLabel: 'Conhecer o Faroll Imóveis',
       ctaHref: '/app/imoveis',
       accentColor: 'orange',
       icon: <Building2 size={28} className="text-orange-400" />,
@@ -75,11 +76,17 @@ const accentStyles: Record<string, { border: string; bg: string; badge: string; 
   },
 };
 
-export function AutomationOfferCard({ profession }: AutomationOfferCardProps) {
+export function AutomationOfferCard({ profession, acesso = false }: AutomationOfferCardProps) {
   const offer = getOfferConfig(profession);
   if (!offer) return null;
 
   const s = accentStyles[offer.accentColor] ?? accentStyles.orange;
+
+  const ctaLabel = acesso
+    ? `Acessar ${offer.titulo}`
+    : offer.ctaLabel;
+
+  const badgeLabel = acesso ? 'Ativo' : 'Parceiro';
 
   return (
     <div className={`rounded-2xl border ${s.border} ${s.bg} p-6 space-y-4`}>
@@ -93,7 +100,7 @@ export function AutomationOfferCard({ profession }: AutomationOfferCardProps) {
             <div className="flex items-center gap-2">
               <h3 className="font-black text-white text-lg">{offer.titulo}</h3>
               <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${s.badge}`}>
-                Parceiro
+                {badgeLabel}
               </span>
             </div>
             <p className="text-sm text-slate-400 font-medium">{offer.subtitulo}</p>
@@ -120,7 +127,7 @@ export function AutomationOfferCard({ profession }: AutomationOfferCardProps) {
         href={offer.ctaHref}
         className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all ${s.btn}`}
       >
-        {offer.ctaLabel}
+        {ctaLabel}
         <ExternalLink size={14} />
       </a>
     </div>

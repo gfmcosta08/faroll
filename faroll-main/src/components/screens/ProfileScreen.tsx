@@ -115,7 +115,7 @@ export function ProfileScreen() {
                       <Button asChild variant="secondary" className="gap-2 flex-1">
                         <a href="/app/saude">
                           <LayoutDashboard className="h-4 w-4" />
-                          Acessar Health-App
+                          Acessar Faroll Saúde
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </Button>
@@ -124,7 +124,7 @@ export function ProfileScreen() {
                       <Button asChild variant="secondary" className="gap-2 flex-1">
                         <a href="/app/imoveis">
                           <LayoutDashboard className="h-4 w-4" />
-                          Acessar Fox Imobiliário
+                          Acessar Faroll Imóveis
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </Button>
@@ -138,7 +138,16 @@ export function ProfileScreen() {
           {/* Card de oferta de automação — exibido apenas para profissionais logados */}
           {user?.role === 'profissional' && professionObj && (
             <div className="mt-4">
-              <AutomationOfferCard profession={professionObj} />
+              <AutomationOfferCard
+                profession={professionObj}
+                acesso={
+                  professionObj.categoria === 'saude'
+                    ? (user?.acessoHealthApp ?? false)
+                    : professionObj.categoria === 'imobiliario'
+                    ? (user?.acessoFoxImobiliario ?? false)
+                    : false
+                }
+              />
             </div>
           )}
         </motion.div>
