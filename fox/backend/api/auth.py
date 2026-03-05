@@ -1,63 +1,75 @@
+"""
+Auth — valida JWT do Supabase e carrega perfil do usuário em imob.profiles.
+O login agora é feito pelo frontend via Supabase Auth diretamente.
+"""
 from fastapi import APIRouter, HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-import bcrypt
-from jose import jwt, JWTError
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
+import httpx
 import os
+from dotenv import load_dotenv
 
 from backend.database import get_db
-from backend.models.schemas import LoginRequest, TokenResponse
 
 load_dotenv()
 
 router = APIRouter(prefix="/api/auth", tags=["Auth"])
 
-SECRET_KEY = os.getenv("JWT_SECRET", "fox-secret-change-in-production")
-ALGORITHM  = "HS256"
-TOKEN_EXP_HOURS = 24
+SUPABASE_URL      = os.getenv("SUPABASE_URL")
+SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 bearer = HTTPBearer()
 
-
-def create_token(data: dict) -> str:
-    payload = data.copy()
-    payload["exp"] = datetime.utcnow() + timedelta(hours=TOKEN_EXP_HOURS)
-    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
+PERFIL_MAP = {
+    "dono_imobiliaria": "admin",
+    "gerente":           "gerente",
+    "corretor":          "corretor",
+    "secretaria":        "secretaria",
+}
 
 
 def verify_token(credentials: HTTPAuthorizationCredentials = Depends(bearer)) -> dict:
-    try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
-        return payload
-    except JWTError:
+    """
+    1. Verifica o JWT com Supabase Auth (/auth/v1/user)
+    2. Carrega empresa_id e perfil de imob.profiles
+    Retorna: {"sub": user_id, "empresa_id": ..., "perfil": ..., "email": ...}
+    """
+    token = credentials.credentials
+
+    # 1. Verifica o token com Supabase
+    r = httpx.get(
+        f"{SUPABASE_URL}/auth/v1/user",
+        headers={
+            "apikey":        SUPABASE_ANON_KEY,
+            "Authorization": f"Bearer {token}",
+        },
+        timeout=5,
+    )
+    if r.status_code != 200:
         raise HTTPException(status_code=401, detail="Token inválido ou expirado")
 
+    supabase_user = r.json()
+    user_id = supabase_user.get("id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Token sem identificação de usuário")
 
-@router.post("/login", response_model=TokenResponse)
-def login(body: LoginRequest):
+    # 2. Carrega perfil do usuário em imob.profiles
     db = get_db()
+    result = db.table("profiles").select("empresa_id,role").eq("user_id", user_id).execute()
 
-    result = db.table("corretores").select("*").eq("email", body.email).eq("ativo", True).execute()
+    if not result.data or not result.data[0].get("empresa_id"):
+        raise HTTPException(status_code=403, detail="Usuário sem perfil no Faroll Imóveis")
 
-    if not result.data:
-        raise HTTPException(status_code=401, detail="Credenciais inválidas")
+    profile = result.data[0]
 
-    corretor = result.data[0]
+    return {
+        "sub":        user_id,
+        "empresa_id": profile["empresa_id"],
+        "perfil":     PERFIL_MAP.get(profile.get("role", ""), "corretor"),
+        "email":      supabase_user.get("email", ""),
+    }
 
-    if not bcrypt.checkpw(body.senha.encode(), corretor["senha_hash"].encode()):
-        raise HTTPException(status_code=401, detail="Credenciais inválidas")
 
-    token = create_token({
-        "sub":        corretor["id"],
-        "empresa_id": corretor["empresa_id"],
-        "perfil":     corretor["perfil"],
-    })
-
-    return TokenResponse(
-        access_token=token,
-        corretor_id=corretor["id"],
-        empresa_id=corretor["empresa_id"],
-        perfil=corretor["perfil"],
-        nome=corretor["nome"],
-    )
+@router.get("/me")
+def me(payload: dict = Depends(verify_token)):
+    """Retorna os dados do usuário autenticado (útil para debug)."""
+    return payload

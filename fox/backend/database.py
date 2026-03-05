@@ -7,78 +7,15 @@ load_dotenv()
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY")
 
+# Accept-Profile e Content-Profile direcionam o PostgREST para o schema imob
 _HEADERS = {
-    "apikey":        SUPABASE_KEY,
-    "Authorization": f"Bearer {SUPABASE_KEY}",
-    "Content-Type":  "application/json",
-    "Prefer":        "return=representation",
+    "apikey":           SUPABASE_KEY,
+    "Authorization":    f"Bearer {SUPABASE_KEY}",
+    "Content-Type":     "application/json",
+    "Prefer":           "return=representation",
+    "Accept-Profile":   "imob",
+    "Content-Profile":  "imob",
 }
-
-
-class Table:
-    """
-    Wrapper leve sobre a API REST do Supabase (PostgREST).
-    Substitui o SDK oficial sem dependências pesadas.
-    """
-
-    def __init__(self, name: str):
-        self._name    = name
-        self._url     = f"{SUPABASE_URL}/rest/v1/{name}"
-        self._filters = []
-        self._select  = "*"
-        self._order   = None
-        self._desc    = False
-
-    def select(self, cols: str = "*"):
-        self._select = cols
-        return self
-
-    def eq(self, col: str, val):
-        self._filters.append(f"{col}=eq.{val}")
-        return self
-
-    def order(self, col: str, desc: bool = False):
-        self._order = col
-        self._desc  = desc
-        return self
-
-    def _build_params(self) -> dict:
-        params = {"select": self._select}
-        for f in self._filters:
-            key, val = f.split("=", 1)
-            params[key] = val
-        if self._order:
-            params["order"] = f"{self._order}.{'desc' if self._desc else 'asc'}"
-        return params
-
-    def execute(self):
-        params = self._build_params()
-        r = httpx.get(self._url, headers=_HEADERS, params=params)
-        r.raise_for_status()
-        return _Result(r.json())
-
-    def insert(self, data: dict):
-        self._data = data
-        return self
-
-    def update(self, data: dict):
-        self._data = data
-        return self
-
-    def _flush_write(self, method: str):
-        params = {}
-        for f in self._filters:
-            key, val = f.split("=", 1)
-            params[key] = val
-        r = httpx.request(
-            method,
-            self._url,
-            headers=_HEADERS,
-            params=params,
-            json=self._data,
-        )
-        r.raise_for_status()
-        return _Result(r.json())
 
 
 class _Result:
@@ -93,10 +30,10 @@ class DB:
 
 class TableBuilder:
     def __init__(self, name: str):
-        self._name    = name
-        self._url     = f"{SUPABASE_URL}/rest/v1/{name}"
+        self._name       = name
+        self._url        = f"{SUPABASE_URL}/rest/v1/{name}"
         self._filters: list[tuple] = []
-        self._sel     = "*"
+        self._sel        = "*"
         self._order_col  = None
         self._order_desc = False
         self._write_data = None
@@ -123,6 +60,11 @@ class TableBuilder:
     def update(self, data: dict):
         self._method     = "PATCH"
         self._write_data = data
+        return self
+
+    def maybeSingle(self):
+        """Alias: retorna None se não encontrar, sem erro."""
+        self._maybe_single = True
         return self
 
     def _params(self) -> dict:
