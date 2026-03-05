@@ -36,10 +36,7 @@ export function Navigation() {
   const showBack = screenHistory.length > 0 || ['perfil', 'chat', 'novo-dependente', 'editar-dependente', 'proposta', 'calendario-profissional', 'profissional-detalhe', 'cliente-detalhe', 'gerenciar-agenda', 'calendario-pessoal', 'solicitacoes'].includes(screen);
 
   const handleLogout = async () => {
-    console.log('[Navigation] handleLogout called');
-    // LOGOUT DETERMINÍSTICO: Sempre desloga e redireciona, mesmo com erro
-    await signOut();
-    // Força limpeza completa e redirecionamento (independente do resultado)
+    try { await signOut(); } catch (e) { console.error('[auth] signOut error:', e); }
     window.location.href = '/';
   };
 

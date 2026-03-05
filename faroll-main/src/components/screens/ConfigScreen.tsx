@@ -115,7 +115,7 @@ export function ConfigScreen() {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
 
@@ -418,7 +418,7 @@ export function ConfigScreen() {
                       <Button asChild variant="secondary" className="gap-2 flex-1">
                         <a href="/app/saude">
                           <LayoutDashboard className="h-4 w-4" />
-                          Acessar Health-App
+                          Acessar Faroll Saúde
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </Button>
@@ -427,7 +427,7 @@ export function ConfigScreen() {
                       <Button asChild variant="secondary" className="gap-2 flex-1">
                         <a href="/app/imoveis">
                           <LayoutDashboard className="h-4 w-4" />
-                          Acessar Fox Imobiliário
+                          Acessar Faroll Imóveis
                           <ExternalLink className="h-3 w-3" />
                         </a>
                       </Button>
