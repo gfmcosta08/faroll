@@ -10,6 +10,7 @@ import { Header } from '@/components/layout/Header';
 import { Navigation } from '@/components/layout/Navigation';
 import { AutomationOfferCard } from '@/components/AutomationOfferCard';
 import { professions } from '@/data/professions';
+import { navigateToSaude } from '@/utils/navigateToSubApp';
 
 export function ProfileScreen() {
   const { selectedProfessional, navigate, getProfessionalSettings } = useApp();
@@ -112,12 +113,14 @@ export function ProfileScreen() {
                   <p className="font-semibold text-sm text-muted-foreground">Seus painéis</p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     {user?.acessoHealthApp && (
-                      <Button asChild variant="secondary" className="gap-2 flex-1">
-                        <a href="/app/saude">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Acessar Faroll Saúde
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
+                      <Button
+                        variant="secondary"
+                        className="gap-2 flex-1"
+                        onClick={() => navigateToSaude()}
+                      >
+                        <LayoutDashboard className="h-4 w-4" />
+                        Acessar Faroll Saúde
+                        <ExternalLink className="h-3 w-3" />
                       </Button>
                     )}
                     {user?.acessoFoxImobiliario && (
@@ -147,6 +150,7 @@ export function ProfileScreen() {
                     ? (user?.acessoFoxImobiliario ?? false)
                     : false
                 }
+                onCta={professionObj.categoria === 'saude' ? () => navigateToSaude() : undefined}
               />
             </div>
           )}

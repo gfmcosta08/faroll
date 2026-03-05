@@ -4,6 +4,8 @@ import { Profession } from '@/data/professions';
 interface AutomationOfferCardProps {
   profession: Profession;
   acesso?: boolean;
+  /** Callback chamado quando o CTA é clicado (ex: handoff de token para psicoapp) */
+  onCta?: () => void;
 }
 
 interface OfferConfig {
@@ -76,7 +78,7 @@ const accentStyles: Record<string, { border: string; bg: string; badge: string; 
   },
 };
 
-export function AutomationOfferCard({ profession, acesso = false }: AutomationOfferCardProps) {
+export function AutomationOfferCard({ profession, acesso = false, onCta }: AutomationOfferCardProps) {
   const offer = getOfferConfig(profession);
   if (!offer) return null;
 
@@ -123,13 +125,24 @@ export function AutomationOfferCard({ profession, acesso = false }: AutomationOf
       </ul>
 
       {/* CTA — mesmo domínio: /app/saude ou /app/imoveis */}
-      <a
-        href={offer.ctaHref}
-        className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all ${s.btn}`}
-      >
-        {ctaLabel}
-        <ExternalLink size={14} />
-      </a>
+      {onCta ? (
+        <button
+          type="button"
+          onClick={onCta}
+          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all ${s.btn}`}
+        >
+          {ctaLabel}
+          <ExternalLink size={14} />
+        </button>
+      ) : (
+        <a
+          href={offer.ctaHref}
+          className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-sm transition-all ${s.btn}`}
+        >
+          {ctaLabel}
+          <ExternalLink size={14} />
+        </a>
+      )}
     </div>
   );
 }

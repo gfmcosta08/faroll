@@ -13,6 +13,7 @@ import { Save, Loader2, X, Plus, Minus, Search, ArrowLeft, UserPlus, ChevronRigh
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { navigateToSaude } from "@/utils/navigateToSubApp";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { ImageUpload } from "@/components/ImageUpload";
@@ -415,12 +416,14 @@ export function ConfigScreen() {
                   <p className="font-semibold text-sm text-muted-foreground">Seus painéis</p>
                   <div className="flex flex-col sm:flex-row gap-2">
                     {user?.acessoHealthApp && (
-                      <Button asChild variant="secondary" className="gap-2 flex-1">
-                        <a href="/app/saude">
-                          <LayoutDashboard className="h-4 w-4" />
-                          Acessar Faroll Saúde
-                          <ExternalLink className="h-3 w-3" />
-                        </a>
+                      <Button
+                        variant="secondary"
+                        className="gap-2 flex-1"
+                        onClick={() => navigateToSaude()}
+                      >
+                        <LayoutDashboard className="h-4 w-4" />
+                        Acessar Faroll Saúde
+                        <ExternalLink className="h-3 w-3" />
                       </Button>
                     )}
                     {user?.acessoFoxImobiliario && (
