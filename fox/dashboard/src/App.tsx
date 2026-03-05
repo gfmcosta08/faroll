@@ -9,12 +9,14 @@ import Colaboradores from './pages/Colaboradores'
 import { ReactNode } from 'react'
 
 function PrivateRoute({ children }: { children: ReactNode }) {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
+  if (isLoading) return <div className="min-h-screen bg-slate-950" />
   return user ? <Layout>{children}</Layout> : <Navigate to="/login" replace />
 }
 
 function PublicRoute({ children }: { children: ReactNode }) {
-  const { user } = useAuth()
+  const { user, isLoading } = useAuth()
+  if (isLoading) return <div className="min-h-screen bg-slate-950" />
   return user ? <Navigate to="/" replace /> : <>{children}</>
 }
 

@@ -34,7 +34,7 @@ export default function Login() {
             <span className="w-12 h-1 bg-orange-500 rounded-full" />
           </div>
           <h1 className="text-6xl font-black tracking-tighter bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-            Fox Imobiliário
+            Faroll Imóveis
           </h1>
           <p className="text-slate-500 mt-2 font-medium">Automação para corretores e imobiliárias</p>
         </div>
