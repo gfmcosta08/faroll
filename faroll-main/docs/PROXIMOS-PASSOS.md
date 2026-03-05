@@ -1,94 +1,215 @@
 # Próximos passos – continuar o projeto
 
-**Última atualização:** 03/03/2026 (fim do dia)
+**Última atualização:** 04/03/2026 (fim do dia)
 
 ---
 
-## ⚠️ PRIORIDADE AMANHÃ: Confirmar fix do login (Invalid API Key)
+## 🔴 FAZER PRIMEIRO — Configurações manuais pendentes
 
-### O que foi feito hoje (03/03/2026)
-Investigamos e corrigimos o root cause do erro “Invalid API key” em produção:
+### 1. Vercel — projeto `dashboard-coral-two-64` (Faroll Imóveis)
 
-**Root cause encontrado:** O Vercel tinha **duas variáveis** com a chave Supabase, e o código (`env.ts`) usa `VITE_SUPABASE_PUBLISHABLE_KEY` com prioridade sobre `VITE_SUPABASE_ANON_KEY`. Apenas a `ANON_KEY` havia sido atualizada com a chave nova; a `PUBLISHABLE_KEY` ainda tinha a chave antiga/inválida.
+No painel Vercel → projeto `dashboard-coral-two-64`:
 
-**O que foi corrigido:**
-- ✅ `VITE_SUPABASE_ANON_KEY` → atualizada com a chave atual do Supabase dashboard
-- ✅ `VITE_SUPABASE_PUBLISHABLE_KEY` → também atualizada com a mesma chave
-- ✅ Deploy disparado (commit `70da7b1`) às ~23:35 de 03/03/2026
+**Settings → Environment Variables** — adicionar/atualizar:
 
-**Último commit:** `70da7b1` — “trigger deploy: fix VITE_SUPABASE_PUBLISHABLE_KEY no Vercel”
+| Variável | Valor |
+|----------|-------|
+| `VITE_SUPABASE_URL` | `https://btndyypkyrlktkadymuv.supabase.co` |
+| `VITE_SUPABASE_ANON_KEY` | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ0bmR5eXBreXJsa3RrYWR5bXV2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk5NzY1OTAsImV4cCI6MjA4NTU1MjU5MH0.5BYPNbD3cXA-_f_SMzKk4fUCGHOgGON13E13un9zox8` |
+| `VITE_API_URL` | URL do backend fox (ex: `https://seu-backend.railway.app`) |
 
-### Amanhã: primeira coisa a fazer
+**Settings → General → Root Directory:**
+- Verificar se está `fox/dashboard`. Se não estiver, corrigir.
 
-1. Abrir **https://farollbr.com.br** em **aba anônima**
-2. Tentar fazer login com suas credenciais
-3. **Se funcionar:** ✅ problema resolvido — pode seguir com as pendências abaixo
-4. **Se ainda der erro “Invalid API key”:**
-   - Abrir F12 → Network → clicar em `/auth/v1/token` → ver `apikey` no Request Headers
-   - Verificar no Vercel se `VITE_SUPABASE_PUBLISHABLE_KEY` foi salva corretamente (Settings → Environment Variables)
-   - Verificar se o deploy `70da7b1` está como **Ready + Current** no Vercel → Deployments
-
-### Variáveis corretas no Vercel (conferir se necessário)
-| Variável | Ambiente | Valor esperado |
-|---|---|---|
-| `VITE_SUPABASE_URL` | Production | `https://btndyypkyrlktkadymuv.supabase.co` |
-| `VITE_SUPABASE_ANON_KEY` | Production | chave anon atual do Supabase → Settings → API |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` | Production | **mesma chave** da ANON_KEY acima |
+Após salvar → **Redeploy** com "Clear build cache".
 
 ---
 
-## Estado atual do projeto
+### 2. Backend fox — preencher `.env`
 
-- **Repositório:** branch `main`, tudo commitado e em push.
-- **farollbr.com.br:** login com erro “Invalid API key” (fix aplicado, confirmar amanhã).
-- **Integração domínio único:** Rewrites no `faroll-main/vercel.json` para `/app/saude` e `/app/imoveis` em produção.
-- **Painéis no perfil:** Botões “Acessar painel” para quem tem `acesso_health_app` ou `acesso_fox_imobiliario` (ver `SUPABASE-PAINEIS-ACESSO.md`).
-- **Fox (imoveis):** `fox/dashboard/vercel.json` atualizado.
+Arquivo: `fox/backend/.env`
 
----
-
-## Pendências conhecidas (após confirmar login)
-
-- **Redesign da landing:** enviar referências visuais; ajustar: imagem de natureza fora, mais ênfase na logo, carrossel de profissionais, seção “cadastro, busca, contato e agenda” menor, informativos em estilo jornal.
+| Variável | Onde buscar |
+|----------|-------------|
+| `SUPABASE_SERVICE_ROLE_KEY` | Supabase → Settings → API → `service_role` secret key |
+| `OPENAI_API_KEY` | platform.openai.com → API Keys |
+| `UAZAPI_BASE_URL` | Painel UAZAPI |
+| `UAZAPI_TOKEN` | Painel UAZAPI |
+| `UAZAPI_INSTANCE` | Painel UAZAPI |
 
 ---
 
-## Checklist 404 /app/imoveis
+## ✅ TESTES — O que validar depois das configurações acima
 
-Se `https://farollbr.com.br/app/imoveis` retornar 404:
-
-1. **Vercel → projeto dashboard (Fox)**  
-   - **Settings → General** → **Root Directory** deve ser **`fox/dashboard`** (caminho relativo à raiz do repositório).  
-   - Se estiver vazio ou diferente (ex.: `dashboard`, `fox`), alterar para **`fox/dashboard`** e salvar.
-
-2. **Redeploy do projeto dashboard**  
-   - **Deployments** → último deploy → **Redeploy** com **"Clear build cache"** marcado.  
-   - Aguardar 2–3 minutos.
-
-3. **Testar na ordem:**  
-   - Primeiro: **https://dashboard-coral-two-64.vercel.app/app/imoveis**  
-     Se ainda der 404 aqui, o problema está no build/config do Fox (ver Build Logs; Build Command `npm run build`, Output Directory `dist`).  
-   - Depois: **https://farollbr.com.br/app/imoveis**  
-     Se funcionar, o rewrite do faroll-main está correto e o problema era o deploy do Fox.
+### TESTE 1 — Login no faroll-main (já deve funcionar)
+1. Abrir **https://farollbr.com.br** em aba anônima
+2. Fazer login com `farollapi@gmail.com`
+3. ✅ Esperado: entra no app normalmente, sem "Invalid API key"
 
 ---
 
-## Pendências conhecidas
-
-- **Redesign da landing:** você vai enviar referências visuais; aí ajustamos: imagem de natureza fora, mais ênfase na logo, carrossel de profissionais, seção “cadastro, busca, contato e agenda” menor, informativos em estilo jornal.
-
----
-
-## Arquivos úteis
-
-| Arquivo | Uso |
-|--------|-----|
-| `faroll-main/vercel.json` | Rewrites para saude e imoveis |
-| `fox/dashboard/vercel.json` | Rewrites para servir SPA em `/app/imoveis` |
-| `faroll-main/docs/SUPABASE-PAINEIS-ACESSO.md` | Migration e flags de acesso aos painéis |
-| `faroll-main/docs/PRODUTOS-E-PAINEIS.md` | Visão geral produtos e painéis |
-| `faroll-main/docs/LOGIN-PRODUCAO.md` | Login em produção |
+### TESTE 2 — Acesso liberado no perfil
+1. Logado como `farollapi@gmail.com`
+2. Ir em **Perfil** (ícone de usuário)
+3. ✅ Esperado: dois botões aparecem:
+   - "Acessar Faroll Saúde" (botão secundário)
+   - "Acessar Faroll Imóveis" (botão secundário)
+4. ✅ Esperado: card `AutomationOfferCard` aparece com badge **"Ativo"** e botão **"Acessar Faroll..."** (não "Conhecer")
 
 ---
 
-Para retomar: abrir este doc e seguir a seção **“Amanhã: primeira coisa a fazer”**.
+### TESTE 3 — Faroll Saúde (`/app/saude`)
+1. Clicar em "Acessar Faroll Saúde" ou ir em **https://farollbr.com.br/app/saude**
+2. ✅ Esperado: abre a tela de login do psicoapp com título **"Faroll Saúde | Gestão de Clínicas"**
+3. Fazer login com `farollapi@gmail.com`
+4. ✅ Esperado: entra no dashboard do psicoapp sem "Failed to fetch"
+5. Criar uma clínica de teste (Setup)
+6. ✅ Esperado: dados salvos no Supabase → schema `health` → tabela `health.clinics`
+
+Para confirmar no Supabase SQL Editor:
+```sql
+SELECT * FROM health.clinics ORDER BY created_at DESC LIMIT 5;
+SELECT * FROM health.profiles WHERE email = 'farollapi@gmail.com';
+```
+
+---
+
+### TESTE 4 — Faroll Imóveis (`/app/imoveis`)
+1. Clicar em "Acessar Faroll Imóveis" ou ir em **https://farollbr.com.br/app/imoveis**
+2. ✅ Esperado: abre a tela de login com título **"Faroll Imóveis"**
+3. Fazer login com `farollapi@gmail.com`
+4. ✅ Esperado: entra no dashboard sem 404
+5. Nota: o dashboard só funcionará 100% após criar um perfil em `imob.profiles`
+
+Para criar o perfil manualmente no Supabase (necessário para o 1º login):
+```sql
+-- 1. Primeiro crie uma empresa de teste
+INSERT INTO imob.empresas (nome, plano)
+VALUES ('Imobiliária Teste', 'trial')
+RETURNING id;
+
+-- 2. Copie o ID retornado e insira o perfil
+-- (substitua USER_ID pelo id do auth.users do farollapi@gmail.com)
+-- (substitua EMPRESA_ID pelo id retornado acima)
+INSERT INTO imob.profiles (user_id, role, empresa_id, nome, email)
+VALUES (
+  'USER_ID',
+  'dono_imobiliaria',
+  'EMPRESA_ID',
+  'Faroll API',
+  'farollapi@gmail.com'
+);
+```
+
+Para pegar o USER_ID:
+```sql
+SELECT id, email FROM auth.users WHERE email = 'farollapi@gmail.com';
+```
+
+---
+
+### TESTE 5 — AutomationOfferCard (comportamento por tipo de usuário)
+
+**Usuário profissional da saúde COM acesso:**
+- Badge: **"Ativo"**
+- Botão: **"Acessar Faroll Saúde"**
+
+**Usuário profissional da saúde SEM acesso:**
+- Badge: **"Parceiro"**
+- Botão: **"Conhecer o Faroll Saúde"**
+
+**Usuário corretor de imóveis COM acesso:**
+- Badge: **"Ativo"**
+- Botão: **"Acessar Faroll Imóveis"**
+
+---
+
+### TESTE 6 — Backend fox (após preencher .env)
+1. Fazer uma requisição autenticada ao backend (ex: `GET /api/leads`)
+2. ✅ Esperado: retorna dados da empresa do usuário logado
+3. ✅ Token Supabase aceito (não mais token customizado `fox_token`)
+4. ✅ Dados vêm do schema `imob` (não mais schema `public`)
+
+---
+
+## 📋 O que foi implementado hoje (04/03/2026)
+
+### Fase 1 — SQL (executado no Supabase `btndyypkyrlktkadymuv`)
+| Arquivo | O que faz |
+|---------|-----------|
+| `supabase/migrations/20260304000001_health_schema.sql` | Schema `health` com 10 tabelas + RLS para Faroll Saúde |
+| `supabase/migrations/20260304000002_imob_schema.sql` | Schema `imob` com 9 tabelas + RLS para Faroll Imóveis |
+| SQL avulso | `farollapi@gmail.com` com `acesso_health_app=true` e `acesso_fox_imobiliario=true` |
+
+### Fase 2 — faroll-main (commits na branch `main`)
+| Arquivo | Mudança |
+|---------|---------|
+| `src/components/AutomationOfferCard.tsx` | Renomeado Health-App → Faroll Saúde, Fox Imobiliário → Faroll Imóveis; prop `acesso` (badge Ativo/Parceiro, botão Acessar/Conhecer) |
+| `src/components/screens/ProfileScreen.tsx` | Passa prop `acesso` correta; botões "Acessar Faroll Saúde" / "Acessar Faroll Imóveis" |
+
+### Fase 3 — psicoapp (commits na branch `main`)
+| Arquivo | Mudança |
+|---------|---------|
+| `.env` (local) | `NEXT_PUBLIC_SUPABASE_URL` e `ANON_KEY` → projeto `btndyypkyrlktkadymuv` |
+| `src/lib/supabase/client.ts` | `{ db: { schema: "health" } }` |
+| `src/lib/supabase/server.ts` | `{ db: { schema: "health" } }` |
+| `src/lib/supabase/middleware.ts` | `{ db: { schema: "health" } }` |
+| `src/app/layout.tsx` | Título `"Faroll Saúde | Gestão de Clínicas"` |
+| **Vercel `psicoapp-eosin`** | ✅ Env vars atualizadas (feito pelo usuário) |
+
+### Fase 4 — fox/dashboard (commits na branch `main`)
+| Arquivo | Mudança |
+|---------|---------|
+| `src/lib/supabase.ts` | **Novo** — cliente Supabase com `schema: 'imob'` |
+| `src/context/AuthContext.tsx` | Auth migrada para `supabase.auth.signInWithPassword` + perfil de `imob.profiles` |
+| `src/api.ts` | Token Bearer vem de `supabase.auth.getSession()` |
+| `src/App.tsx` | `PrivateRoute`/`PublicRoute` com `isLoading` para evitar flash |
+| `src/pages/Login.tsx` | Título `"Faroll Imóveis"` |
+
+### Fase 5 — fox/backend (commits na branch `main`)
+| Arquivo | Mudança |
+|---------|---------|
+| `api/auth.py` | Remove login customizado; `verify_token` valida JWT via Supabase `/auth/v1/user` + busca `imob.profiles` |
+| `database.py` | Headers `Accept-Profile: imob` e `Content-Profile: imob` em todas as requisições PostgREST |
+| `.env` | URL e anon key atualizados; `SUPABASE_SERVICE_ROLE_KEY` aguardando preenchimento |
+
+---
+
+## 📌 Commits do dia
+
+| Projeto | Commit | Descrição |
+|---------|--------|-----------|
+| faroll-main | `5779339` | health_schema.sql |
+| faroll-main | `a41ead2` | imob_schema.sql |
+| faroll-main | `683cb97` | AutomationOfferCard + ProfileScreen renomeados |
+| psicoapp | `bde7b00` | Reconexão Supabase + schema health |
+| fox/dashboard | `9475753` | Auth migrada para Supabase |
+| fox/backend | `6826aec` | JWT Supabase + schema imob |
+
+---
+
+## 📐 Arquitetura final (referência)
+
+```
+farollbr.com.br          →  Vercel: faroll-main  (Vite/React)  — schema: public
+farollbr.com.br/app/saude   →  rewrite → psicoapp-eosin.vercel.app  (Next.js) — schema: health
+farollbr.com.br/app/imoveis →  rewrite → dashboard-coral-two-64.vercel.app  (React/Vite) — schema: imob
+
+Supabase único: btndyypkyrlktkadymuv
+├── public.*    → faroll-main (agendamentos, perfis, profissionais)
+├── health.*    → Faroll Saúde (clínicas, pacientes, agendamentos, financeiro)
+└── imob.*      → Faroll Imóveis (empresas, imóveis, leads, bot WhatsApp)
+```
+
+---
+
+## 🎯 Próximas etapas (após testes passarem)
+
+- [ ] Redesign da landing page (referências visuais pendentes)
+- [ ] Onboarding de novas clínicas no Faroll Saúde (fluxo de Setup)
+- [ ] Onboarding de novas imobiliárias no Faroll Imóveis (fluxo de criação de empresa)
+- [ ] Tela de "Contratação" dentro do faroll-main para ativar acesso aos produtos
+
+---
+
+Para retomar: abrir este doc e seguir **"FAZER PRIMEIRO"** acima.
