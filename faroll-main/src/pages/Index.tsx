@@ -5,22 +5,8 @@ import { AuthScreen } from "@/components/auth/AuthScreen";
 import { GalleryScreen } from "@/components/screens/GalleryScreen";
 import { ProfessionalGallery } from "@/components/professional/ProfessionalGallery";
 
-import { CalendarScreen } from "@/components/screens/CalendarScreen";
-import { ContactsScreen } from "@/components/screens/ContactsScreen";
-import { SolicitacoesScreen } from "@/components/screens/SolicitacoesScreen";
-import { ProfileScreen } from "@/components/screens/ProfileScreen";
-import { ChatScreen } from "@/components/screens/ChatScreen";
-import { ProposalScreen } from "@/components/screens/ProposalScreen";
 import { ConfigScreen } from "@/components/screens/ConfigScreen";
-import { NewDependentScreen } from "@/components/screens/NewDependentScreen";
-import { EditDependentScreen } from "@/components/screens/EditDependentScreen";
 import { SupportScreen } from "@/components/screens/SupportScreen";
-import { ManageScheduleScreen } from "@/components/screens/ManageScheduleScreen";
-import { ProfessionalCalendarScreen } from "@/components/screens/ProfessionalCalendarScreen";
-import { PersonalCalendarScreen } from "@/components/screens/PersonalCalendarScreen";
-import { NotificationsScreen } from "@/components/screens/NotificationsScreen";
-import { ClientDetailScreen } from "@/components/screens/ClientDetailScreen";
-import { ProfessionalDetailScreen } from "@/components/screens/ProfessionalDetailScreen";
 import { GlobalErrorBoundary } from "@/components/GlobalErrorBoundary";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
@@ -189,23 +175,9 @@ function AppContent() {
     const names: Record<string, string> = {
       galeria: "Galeria",
       "galeria-profissionais": "Galeria de Profissionais",
-      configuracoes: "Configurações",
-      calendario: "Calendário",
-      contatos: "Contatos",
-      solicitacoes: "Solicitações",
-      perfil: "Perfil",
-      chat: "Chat",
-      proposta: "Proposta",
       config: "Configurações",
-      "novo-dependente": "Novo Dependente",
-      "editar-dependente": "Editar Dependente",
+      configuracoes: "Configurações",
       suporte: "Suporte",
-      "gerenciar-agenda": "Gerenciar Agenda",
-      "calendario-profissional": "Calendário Profissional",
-      "calendario-pessoal": "Calendário Pessoal",
-      notificacoes: "Notificações",
-      "cliente-detalhe": "Detalhes do Cliente",
-      "profissional-detalhe": "Detalhes do Profissional",
     };
     return names[s] || s;
   };
@@ -213,43 +185,13 @@ function AppContent() {
   const renderScreen = () => {
     switch (screen) {
       case "galeria":
-        return <GalleryScreen />;
       case "galeria-profissionais":
-        return <ProfessionalGallery />;
+        return <GalleryScreen />;
       case "configuracoes":
-        return <ConfigScreen />;
-      case "calendario":
-        return <CalendarScreen />;
-      case "contatos":
-        return <ContactsScreen />;
-      case "solicitacoes":
-        return <SolicitacoesScreen />;
-      case "perfil":
-        return <ProfileScreen />;
-      case "chat":
-        return <ChatScreen />;
-      case "proposta":
-        return <ProposalScreen />;
       case "config":
         return <ConfigScreen />;
-      case "novo-dependente":
-        return <NewDependentScreen />;
-      case "editar-dependente":
-        return <EditDependentScreen />;
       case "suporte":
         return <SupportScreen />;
-      case "gerenciar-agenda":
-        return <ManageScheduleScreen />;
-      case "calendario-profissional":
-        return <ProfessionalCalendarScreen />;
-      case "calendario-pessoal":
-        return <PersonalCalendarScreen />;
-      case "notificacoes":
-        return <NotificationsScreen />;
-      case "cliente-detalhe":
-        return <ClientDetailScreen />;
-      case "profissional-detalhe":
-        return <ProfessionalDetailScreen />;
       default:
         return <GalleryScreen />;
     }

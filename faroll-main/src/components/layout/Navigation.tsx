@@ -1,15 +1,13 @@
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { useApp } from '@/contexts/AppContext';
 import { useAuthContext } from '@/contexts/AuthContext';
-import { useSolicitacoesCount } from '@/hooks/useSolicitacoes';
-import { LayoutGrid, CalendarDays, Users, Settings, HeadphonesIcon, ArrowLeft, LogOut, Inbox } from 'lucide-react';
+import { LayoutGrid, Settings, HeadphonesIcon, ArrowLeft, LogOut } from 'lucide-react';
 
 export function Navigation() {
   const appContext = useApp();
   const authContext = useAuthContext();
-  const { naoRespondidas } = useSolicitacoesCount();
+  // useSolicitacoesCount removido — Solicitações não está mais no menu
 
   // Guard defensivo: garantir que os contextos existem
   if (!appContext || !authContext) {
@@ -25,9 +23,6 @@ export function Navigation() {
 
   const navItems = [
     { icon: LayoutGrid, label: 'Galeria', screen: 'galeria' as const },
-    { icon: Inbox, label: 'Solicitações', screen: 'solicitacoes' as const, badge: naoRespondidas },
-    { icon: CalendarDays, label: 'Calendário', screen: 'calendario' as const },
-    { icon: Users, label: 'Contatos', screen: 'contatos' as const },
     { icon: Settings, label: 'Configurações', screen: 'config' as const },
     { icon: HeadphonesIcon, label: 'Suporte', screen: 'suporte' as const },
   ];
@@ -68,14 +63,7 @@ export function Navigation() {
         >
           <item.icon className="h-4 w-4" />
           <span className="hidden sm:inline">{item.label}</span>
-          {item.badge && item.badge > 0 && (
-            <Badge 
-              variant="coral" 
-              className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-            >
-              {item.badge > 9 ? '9+' : item.badge}
-            </Badge>
-          )}
+
         </Button>
       ))}
       <Button
